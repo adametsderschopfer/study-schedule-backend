@@ -7,7 +7,6 @@ services:
     restart: always
     ports:
       - "8110:8000"
-      - "8111:8001"
     environment:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: ${DB_DATABASE}

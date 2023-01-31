@@ -16,10 +16,7 @@ RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases
 # USER 1000:1000
 WORKDIR /var/www
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-COPY composer.json composer.json
-COPY artisan artisan
-RUN composer install --no-cache
 COPY ./ /var/www
-
-gti
+RUN composer install --no-cache
+EXPOSE 8080
 CMD [ "php", "artisan", "serve" ]

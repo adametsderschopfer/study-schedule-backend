@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->integer('external_id')->unique();
-            $table->string('name');
-            $table->string('email');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('role')->nullable();
             $table->timestamps();
         });
     }

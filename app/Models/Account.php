@@ -14,6 +14,7 @@ class Account extends Model
         'external_id', 
         'name',
         'email',
+        'role',
     ];
 
     protected $hidden = [

@@ -16,11 +16,14 @@ class AccountController extends Controller
 
     public function saveOrCreate(array $data): void
     {
-        $account = Account::select('external_id')->where('external_id', session('account_id'))->first();
+        $account = Account::where('external_id', session('account_id'))->first();
 
-        if (!$account) {
-            $data['external_id'] = $data['account_id'];
-            $account = Account::create($data);
+        $data['external_id'] = $data['account_id'];
+
+        if ($account) {
+            $account->update($data);
+        } else {
+            Account::create($data);
         }
     }
 }

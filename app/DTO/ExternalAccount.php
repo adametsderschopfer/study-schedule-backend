@@ -34,16 +34,6 @@ class ExternalAccount implements ExternalAccountService
         ];
     }
 
-    public function getData(): array
-    {
-        return [
-            'external_id' => $this->external_id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'role' => $this->role
-        ];
-    }
-
     public function setData(array $data)
     {
         $this->external_id = $data['external_id'];

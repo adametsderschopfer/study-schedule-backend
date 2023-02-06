@@ -11,9 +11,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function sendResponse($result = ['success' => true], $message = '', $code = 200)
+    public function sendResponse($response = ['success' => true], $message = '', $code = 200)
     {
-        $response = $result;
         if ($message !== '') {
             $response['message'] = $message;
         }

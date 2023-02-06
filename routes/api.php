@@ -10,6 +10,6 @@ Route::prefix('v1')->group(function()
         ->prefix('admin')
         ->group(function()
     {
-        Route::resource('accounts', AccountController::class);
+        //
     });
 });

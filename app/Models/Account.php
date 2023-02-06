@@ -36,7 +36,7 @@ class Account extends Model
         return $this->external_id;
     }
 
-    public static function saveOrCreate(ExternalAccount $externalAccount): void
+    public static function saveOrCreate(ExternalAccount $externalAccount): bool
     {
         $account = Account::where('external_id', $externalAccount->getId())->first();
 
@@ -47,5 +47,7 @@ class Account extends Model
         } else {
             Account::create($data);
         }
+
+        return true;
     }
 }

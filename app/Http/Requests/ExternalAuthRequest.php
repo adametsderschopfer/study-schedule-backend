@@ -4,8 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Events\ExternalLoggedIn;
 use App\Services\ExternalAccountService;
+use App\Models\Account;
 
 class ExternalAuthRequest
 {
@@ -45,7 +45,9 @@ class ExternalAuthRequest
 
         $this->externalAccountService->setData($accountData);
 
-        ExternalLoggedIn::dispatch($this->externalAccountService);
+        if (!Account::saveOrCreate($this->externalAccountService)) {
+            return false;
+        }
 
         return true;
     }

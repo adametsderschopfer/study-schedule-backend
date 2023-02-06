@@ -8,8 +8,8 @@ use App\Http\Requests\ExternalAuthRequest;
 
 class HasAccount
 {
-    public function __construct(ExternalAuthRequest $externalAutnRequest) {
-        $this->externalAutnRequest = $externalAutnRequest;
+    public function __construct(ExternalAuthRequest $externalAuthRequest) {
+        $this->externalAuthRequest = $externalAuthRequest;
     }
     /**
      * Handle an incoming request.
@@ -20,8 +20,8 @@ class HasAccount
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$this->externalAutnRequest->send()) {
-            abort(404);
+        if (!$this->externalAuthRequest->send()) {
+            abort(401);
         }
 
         return $next($request);

@@ -4,21 +4,23 @@ namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Events\ExternalAuthorized;
+use App\Events\ExternalLoggedIn;
+use App\Services\ExternalAccountService;
 
 class ExternalAuthRequest
 {
-    public function __construct(Request $request)
+    public function __construct(Request $request, ExternalAccountService $externalAccountService)
     {
         $this->token_key = config('auth.auth_app.token_key');
         $this->auth_url = config('auth.auth_app.url');
         $this->token = $request->header($this->token_key);
+        $this->externalAccountService = $externalAccountService;
     }
 
-    public function send(): ?array
+    public function send(): bool
     {
         if (!$this->token) {
-            return null;
+            return false;
         }
 
         $response = Http::withHeaders(
@@ -29,23 +31,22 @@ class ExternalAuthRequest
 
         if (!$response->successful()) {
             session()->flush();
-            return null;
+            return false;
         }
 
-        $accountData = $response->json();
+        $accountInfo = $response->json();
 
-        $data = [
-            'account_id' => $accountData['id'],
-            'email' => $accountData['email'],
-            'name' => $accountData['firstName'],
-            'role' => $accountData['role'],
+        $accountData = [
+            'external_id' =>  $accountInfo['id'],
+            'email' => $accountInfo['email'],
+            'name' => $accountInfo['firstName'],
+            'role' => $accountInfo['role']
         ];
 
-        session(['account_id' => $accountData['id']]);
-        session(['role' => $accountData['role']]);
+        $this->externalAccountService->setData($accountData);
 
-        ExternalAuthorized::dispatch($data);
+        ExternalLoggedIn::dispatch($this->externalAccountService);
 
-        return $data;
+        return true;
     }
 }

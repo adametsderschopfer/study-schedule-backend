@@ -108,4 +108,9 @@ return [
 
     'password_timeout' => 10800,
 
+    'auth_app' => [
+        'url' => env('AUTH_APP_URL', 'http://localhost'),
+        'token_key' => env('AUTH_APP_TOKEN_KEY', 'token')
+    ],
+
 ];

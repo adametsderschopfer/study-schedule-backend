@@ -9,26 +9,21 @@ use App\Models\Account;
 
 class ExternalAuthRequest
 {
-    public function __construct(Request $request, ExternalAccountService $externalAccountService)
+    public function __construct(ExternalAccountService $externalAccountService)
     {
-        $this->token_key = config('auth.auth_app.token_key');
         $this->auth_url = config('auth.auth_app.url');
-        $this->token = $request->header($this->token_key);
         $this->externalAccountService = $externalAccountService;
     }
 
     public function send(): bool
     {
-        if (!$this->token) {
-            return false;
-        }
+        $headers = collect(getallheaders())
+                    ->except(['User-Agent', 'Host'])
+                    ->toArray();
 
-        $response = Http::withHeaders(
-            [
-                $this->token_key => $this->token
-            ]
-        )->get($this->auth_url);
-
+        $response = Http::withHeaders($headers)
+                    ->get($this->auth_url);
+        
         if (!$response->successful()) {
             session()->flush();
             return false;

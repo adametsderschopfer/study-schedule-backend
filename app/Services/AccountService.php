@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-interface ExternalAccountService
+interface AccountService
 {
     public function setData(array $data);
 }

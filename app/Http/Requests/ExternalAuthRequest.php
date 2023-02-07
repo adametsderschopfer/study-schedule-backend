@@ -4,17 +4,18 @@ namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Services\ExternalAccountService;
+use App\DTO\ExternalAccount;
+use App\Services\AccountService;
 use App\Models\Account;
 
 class ExternalAuthRequest
 {
-    public function __construct(Request $request, ExternalAccountService $externalAccountService)
+    public function __construct(Request $request, AccountService $accountService)
     {
         $this->token_key = config('auth.auth_app.token_key');
         $this->auth_url = config('auth.auth_app.url');
         $this->token = $request->header($this->token_key);
-        $this->externalAccountService = $externalAccountService;
+        $this->accountService = $accountService;
     }
 
     public function send(): bool
@@ -36,18 +37,23 @@ class ExternalAuthRequest
 
         $accountInfo = $response->json();
 
-        $accountData = [
+        $externalAccountData = [
             'external_id' =>  $accountInfo['id'],
             'email' => $accountInfo['email'],
             'name' => $accountInfo['firstName'],
             'role' => $accountInfo['role']
         ];
 
-        $this->externalAccountService->setData($accountData);
+        $externalAccount = new ExternalAccount();
+        $externalAccount->setData($externalAccountData);
 
-        if (!Account::saveOrCreate($this->externalAccountService)) {
+        $account = Account::saveOrCreate($externalAccount);
+
+        if (!$account) {
             return false;
         }
+
+        $this->accountService->setData($account->getData());
 
         return true;
     }

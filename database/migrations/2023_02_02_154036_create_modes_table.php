@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('modes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id');
+            $table->foreignId('account_external_id');
             $table->string('name')->nullable();
             $table->timestamps();
-            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreign('account_external_id')->references('external_id')->on('accounts')->onDelete('cascade');
         });
 
     }
@@ -31,7 +31,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('modes', function (Blueprint $table) {
-            $table->dropForeign('modes_account_id_foreign');
+            $table->dropForeign('modes_account_external_id_foreign');
         });
         Schema::dropIfExists('modes');
     }

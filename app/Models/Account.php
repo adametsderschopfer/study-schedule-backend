@@ -26,19 +26,20 @@ class Account extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function getId(): string
+    public function getData(): array
     {
-        return $this->id;
+        return [
+            'id' => $this->id,
+            'external_id' =>  $this->external_id,
+            'email' => $this->email,
+            'name' => $this->name,
+            'role' => $this->role
+        ];
     }
 
-    public function getExternalId(): string
+    public static function saveOrCreate(ExternalAccount $externalAccount)
     {
-        return $this->external_id;
-    }
-
-    public static function saveOrCreate(ExternalAccount $externalAccount): bool
-    {
-        $account = Account::where('external_id', $externalAccount->getId())->first();
+        $account = Account::where('external_id', $externalAccount->getExternalId())->first();
 
         $data = $externalAccount->serialize();
 
@@ -48,6 +49,6 @@ class Account extends Model
             Account::create($data);
         }
 
-        return true;
+        return $account->fresh();
     }
 }

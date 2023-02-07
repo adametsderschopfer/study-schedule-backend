@@ -6,12 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Mode;
 use Illuminate\Support\Facades\Validator;
+use App\Services\AccountService;
 
 class ModeController extends Controller
 {
+    public function __construct(AccountService $accountService)
+    {
+        $this->accountService = $accountService;
+    }
+
     protected function index()
     {
-        $data = Mode::where('account_id', session('account_id'))->get();
+        $data = Mode::where('account_id', $this->accountService->getId())->get();
+        
         return $this->sendResponse($data);
     }
 
@@ -27,7 +34,8 @@ class ModeController extends Controller
             return $this->sendError(__('Validation error'), $validator->errors(), 422);
         }
 
-        $input['account_id'] = session('account_id');
+        $input['account_id'] = $this->accountService->getId();
+
         $mode = Mode::create($input);
 
         return $this->sendResponse($mode);
@@ -38,7 +46,7 @@ class ModeController extends Controller
         $input = $request->all();
 
         $mode = Mode::where('id', $id)
-            ->where('account_id', session('account_id'))
+            ->where('account_id', $this->accountService->getId())
             ->first();
 
         if (!$mode) {
@@ -63,7 +71,7 @@ class ModeController extends Controller
     protected function show($id)
     {
         $mode = Mode::where('id', $id)
-            ->where('account_id', session('account_id'))
+            ->where('account_id', $this->accountService->getId())
             ->first();
 
         if (!$mode) {
@@ -76,7 +84,7 @@ class ModeController extends Controller
     protected function destroy($id)
     {
         $mode = Mode::where('id', $id)
-            ->where('account_id', session('account_id'))
+            ->where('account_id', $this->accountService->getId())
             ->first();
 
         if (!$mode) {

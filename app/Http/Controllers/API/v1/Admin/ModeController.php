@@ -4,95 +4,41 @@ namespace App\Http\Controllers\API\v1\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Mode;
-use Illuminate\Support\Facades\Validator;
 use App\Services\AccountService;
+use App\Actions\v1\Mode\GetModesAction;
+use App\Actions\v1\Mode\StoreModesAction;
+use App\Actions\v1\Mode\UpdateModesAction;
+use App\Actions\v1\Mode\ShowModesAction;
+use App\Actions\v1\Mode\DeleteModesAction;
 
 class ModeController extends Controller
 {
-    public function __construct(AccountService $accountService)
-    {
+    public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
-    protected function index()
+    public function index(GetModesAction $getModesAction)
     {
-        $data = Mode::where('account_id', $this->accountService->getId())->get();
-        
-        return $this->sendResponse($data);
+        return $getModesAction->execute();
     }
 
-    protected function store(Request $request) 
+    public function store(Request $request, StoreModesAction $storeModesAction) 
     {
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError(__('Validation error'), $validator->errors(), 422);
-        }
-
-        $input['account_id'] = $this->accountService->getId();
-
-        $mode = Mode::create($input);
-
-        return $this->sendResponse($mode);
+        return $storeModesAction->execute($request);
     }
 
-    protected function update(Request $request, $id)
+    protected function update(Request $request, UpdateModesAction $updateModesAction, int $id)
     {
-        $input = $request->all();
-
-        $mode = Mode::where('id', $id)
-            ->where('account_id', $this->accountService->getId())
-            ->first();
-
-        if (!$mode) {
-            return $this->sendError(__('Not found'));
-        }
-
-        $validator = Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError(__('Validation error'), $validator->errors(), 422);
-        }
-
-        if ($mode->update($input)) {
-            return $this->sendResponse($mode);
-        }
-
-        return $this->sendError(__('Server error'));
+        return $updateModesAction->execute($request, $id);
     }
 
-    protected function show($id)
+    protected function show(ShowModesAction $showModesAction, int $id)
     {
-        $mode = Mode::where('id', $id)
-            ->where('account_id', $this->accountService->getId())
-            ->first();
-
-        if (!$mode) {
-            return $this->sendError(__('Not found'));
-        }
-
-        return $this->sendResponse($mode);
+        return $showModesAction->execute($id);
     }
 
-    protected function destroy($id)
+    protected function destroy(DeleteModesAction $deleteModesAction, int $id)
     {
-        $mode = Mode::where('id', $id)
-            ->where('account_id', $this->accountService->getId())
-            ->first();
-
-        if (!$mode) {
-            return $this->sendError(__('Not found'));
-        }
-
-        $mode->delete();
-
-        return $this->sendResponse();
+        return $deleteModesAction->execute($id);
     }
 }

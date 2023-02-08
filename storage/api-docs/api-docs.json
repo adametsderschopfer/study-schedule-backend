@@ -1,0 +1,168 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Schedule API",
+        "description": "API для работы с функционалом раписаний занятий в Университетах",
+        "contact": {
+            "email": "g.ostrikov@itspecial.net"
+        },
+        "license": {
+            "name": "iDesk",
+            "url": "https://i-desk.pro"
+        },
+        "version": "1.0.0",
+        "x-logo": {
+            "url": "https://via.placeholder.com/190x90.png?text=L5-Swagger"
+        }
+    },
+    "paths": {
+        "/api/v1/admin/modes/{modeId}": {
+            "get": {
+                "tags": [
+                    "Modes"
+                ],
+                "summary": "Получение одного режима звонков",
+                "operationId": "show_mode",
+                "parameters": [
+                    {
+                        "name": "modeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Modes"
+                ],
+                "summary": "Обновление режима звонков",
+                "operationId": "edit_mode",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Modes"
+                ],
+                "summary": "Удаление режима звонков",
+                "operationId": "delete_mode",
+                "parameters": [
+                    {
+                        "name": "modeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/modes": {
+            "get": {
+                "tags": [
+                    "Modes"
+                ],
+                "summary": "Получение списка режимов звонков",
+                "operationId": "get_modes",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Modes"
+                ],
+                "summary": "Создание режима звонков",
+                "operationId": "add_mode",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "token": {
+                "type": "apiKey",
+                "description": "Enter token in string format",
+                "name": "token",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "token": [
+                "get_modes",
+                "add_mode",
+                "edit_mode",
+                "show_mode",
+                "delete_mode"
+            ]
+        }
+    ]
+}

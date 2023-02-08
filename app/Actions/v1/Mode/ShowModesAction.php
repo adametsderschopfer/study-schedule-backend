@@ -38,6 +38,11 @@ class ShowModesAction extends ModeController
     {
         $mode = Mode::where('id', $id)
             ->where('account_id', $this->accountService->getId())
+            ->with([
+                'timings' => function ($q) {
+                    $q->orderBy('offset', 'ASC');
+                }
+            ])
             ->first();
 
         if (!$mode) {

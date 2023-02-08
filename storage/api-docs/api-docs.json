@@ -50,14 +50,6 @@
                 "operationId": "edit_mode",
                 "parameters": [
                     {
-                        "name": "name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "modeId",
                         "in": "path",
                         "required": true,
@@ -66,6 +58,34 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "timings": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "time_start": {
+                                                    "type": "string"
+                                                },
+                                                "time_end": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -123,16 +143,34 @@
                 ],
                 "summary": "Создание режима звонков",
                 "operationId": "add_mode",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "timings": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "time_start": {
+                                                    "type": "string"
+                                                },
+                                                "time_end": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Success",

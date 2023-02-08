@@ -28,7 +28,13 @@ class GetModesAction extends ModeController
      */
     public function execute()
     {
-        $data = Mode::where('account_id', $this->accountService->getId())->get();
+        $data = Mode::where('account_id', $this->accountService->getId())
+            ->with([
+                'timings' => function ($q) {
+                    $q->orderBy('offset', 'ASC');
+                }
+            ])
+            ->get();
 
         return $this->sendResponse($data);
     }

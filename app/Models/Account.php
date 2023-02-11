@@ -11,6 +11,8 @@ class Account extends Model
 {
     use HasFactory;
 
+    public const EXTERNAL_ACCOUNT_ID_HEADER_KEY = 'X-Account-Id';
+
     protected $fillable = [
         'external_id', 
         'name',
@@ -19,6 +21,8 @@ class Account extends Model
     ];
 
     protected $hidden = [
+        'id',
+        'external_id',
     ];
 
     protected $casts = [
@@ -46,9 +50,14 @@ class Account extends Model
         if ($account) {
             $account->update($data);
         } else {
-            Account::create($data);
+            $account = Account::create($data);
         }
 
         return $account->fresh();
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use App\Models\Setting;
+use App\Models\Account;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
+        $this->bindModels([
+            'setting' => Setting::class,
+        ]);
     }
 
     /**
@@ -48,5 +54,32 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+    }
+
+    protected function bindModels(array $bindings)
+    {
+        $headers = getallheaders();
+        
+        //$account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first() ?? abort(401);
+
+        foreach ($bindings as $key => $model) {
+            $account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first();
+            
+            Route::model($key, $model);
+            Route::bind($key, function ($id) use ($model, $account) {
+                return $model::where('id', $id)
+                        // ->where('account_id', $account->getId())
+                        // ->where('account_id', function() use ($headers) {
+                        //     Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first()->getId() ?? abort(401);
+                        // })
+                        // ->where('account_id', function() use ($headers) {
+                        //     $query->select('id')
+                        //             ->from('accounts')
+                        //             ->where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])
+                        //             ->first();
+                        // })
+                        ->first();
+            });
+        }
     }
 }

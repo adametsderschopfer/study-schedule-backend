@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('timings', function (Blueprint $table) {
+        Schema::create('setting_items', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('offset')->default(0);
             $table->time('time_start')->default('00:00');
             $table->time('time_end')->default('00:00');
-            $table->foreignId('mode_id');
-            $table->foreign('mode_id')->references('id')->on('modes')->onDelete('cascade');
+            $table->foreignId('setting_id');
+            $table->foreign('setting_id')->references('id')->on('settings')->onDelete('cascade');
         });
     }
 
@@ -30,9 +30,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('timings', function (Blueprint $table) {
-            $table->dropForeign('timings_mode_id_foreign');
+        Schema::table('setting_items', function (Blueprint $table) {
+            $table->dropForeign('setting_items_setting_id_foreign');
         });
-        Schema::dropIfExists('timings');
+        Schema::dropIfExists('setting_items');
     }
 };

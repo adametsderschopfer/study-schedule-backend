@@ -22,7 +22,7 @@ class ExternalAuthRequest
     {
         $headers = getallheaders();
         
-        if (!isset($headers[self::TOKEN_KEY])) {
+        if (!isset($headers[self::TOKEN_KEY]) || !isset($headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])) {
             return false;
         }
 
@@ -30,13 +30,18 @@ class ExternalAuthRequest
                 self::TOKEN_KEY => $headers[self::TOKEN_KEY]
             ])
             ->get($this->auth_url);
-        
+            
         if (!$response->successful()) {
             session()->flush();
             return false;
         }
 
         $accountInfo = $response->json();
+
+        if ($accountInfo['id'] !== (int) $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY]) {
+            
+            return false;
+        }
 
         $externalAccountData = [
             'external_id' =>  $accountInfo['id'],

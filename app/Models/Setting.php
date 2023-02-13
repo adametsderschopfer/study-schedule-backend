@@ -26,9 +26,17 @@ class Setting extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function settingItems()
+    public function setting_items()
     {
         return $this->hasMany(SettingItem::class);
+    }
+
+    public function addSettingItem(array $settingItem, int $offset): void
+    {
+        $item['setting_id'] = $this->id;
+        $item['offset'] = $offset;
+
+        SettingItem::create($settingItem);
     }
 
     public function giveSettingItems(array $settingItems): void
@@ -47,6 +55,6 @@ class Setting extends Model
 
     public function deleteSettingItems(): void
     {
-        $this->settingItems()->delete();
+        $this->setting_items()->delete();
     }
 }

@@ -7,10 +7,11 @@ use App\Http\Controllers\API\v1\Admin\AccountController;
 
 Route::prefix('v1')->group(function()
 {
-    Route::prefix('admin')
+    Route::middleware('hasAccount')
+        ->prefix('admin')
         ->group(function()
     {
-        Route::get('me', [AccountController::class, 'index'])->middleware('hasAccount');
+        Route::get('me', [AccountController::class, 'index']);
         Route::resource('settings', SettingController::class);
     });
 });

@@ -200,8 +200,14 @@ return [
                 */
                 'token' => [
                     'type' => 'apiKey',
-                    'description' => 'Enter token in string format',
+                    'description' => 'Enter token in string format!',
                     'name' => 'token',
+                    'in' => 'header',
+                ],
+                'x_account_id' => [
+                    'type' => 'apiKey',
+                    'description' => 'iDesk account ID',
+                    'name' => 'X-Account-Id',
                     'in' => 'header',
                 ],
             ],
@@ -219,11 +225,18 @@ return [
                     'passport' => []
                     */
                     'token' => [
-                        'get_modes', 
-                        'add_mode', 
-                        'edit_mode', 
-                        'show_mode', 
-                        'delete_mode'
+                        'get_settings', 
+                        'add_setting', 
+                        'edit_setting', 
+                        'show_setting', 
+                        'delete_setting'
+                    ],
+                    'x_account_id' => [
+                        'get_settings', 
+                        'add_setting', 
+                        'edit_setting', 
+                        'show_setting', 
+                        'delete_setting'
                     ]
                 ],
             ],

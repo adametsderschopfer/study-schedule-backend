@@ -60,24 +60,17 @@ class RouteServiceProvider extends ServiceProvider
     {
         $headers = getallheaders();
         
-        //$account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first() ?? abort(401);
-
         foreach ($bindings as $key => $model) {
-            $account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first();
-            
+            $account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY] ?? null)->first();
+
+            if (!$account) {
+                return;
+            }
+
             Route::model($key, $model);
             Route::bind($key, function ($id) use ($model, $account) {
                 return $model::where('id', $id)
-                        // ->where('account_id', $account->getId())
-                        // ->where('account_id', function() use ($headers) {
-                        //     Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])->first()->getId() ?? abort(401);
-                        // })
-                        // ->where('account_id', function() use ($headers) {
-                        //     $query->select('id')
-                        //             ->from('accounts')
-                        //             ->where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY])
-                        //             ->first();
-                        // })
+                        ->where('account_id', $account->getId())
                         ->first();
             });
         }

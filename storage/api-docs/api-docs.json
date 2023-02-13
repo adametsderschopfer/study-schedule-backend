@@ -3,29 +3,69 @@
     "info": {
         "title": "Schedule API",
         "description": "API для работы с функционалом раписаний занятий в Университетах",
-        "contact": {
-            "email": "g.ostrikov@itspecial.net"
-        },
-        "license": {
-            "name": "iDesk",
-            "url": "https://i-desk.pro"
-        },
-        "version": "1.0.0",
-        "x-logo": {
-            "url": "https://via.placeholder.com/190x90.png?text=L5-Swagger"
-        }
+        "version": "1.0.0"
     },
     "paths": {
-        "/api/v1/admin/modes/{modeId}": {
+        "/api/v1/admin/settings": {
             "get": {
                 "tags": [
-                    "Modes"
+                    "Settings"
                 ],
-                "summary": "Получение одного режима звонков",
-                "operationId": "show_mode",
+                "summary": "Получение списка режимов звонков",
+                "operationId": "get_settings",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Создание режима звонков",
+                "operationId": "add_setting",
                 "parameters": [
                     {
-                        "name": "modeId",
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/settings/{settingId}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Получение одного режима звонков",
+                "operationId": "show_setting",
+                "parameters": [
+                    {
+                        "name": "settingId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -44,17 +84,25 @@
             },
             "put": {
                 "tags": [
-                    "Modes"
+                    "Settings"
                 ],
                 "summary": "Обновление режима звонков",
-                "operationId": "edit_mode",
+                "operationId": "edit_setting",
                 "parameters": [
                     {
-                        "name": "modeId",
+                        "name": "settingId",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -63,10 +111,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "timings": {
+                                    "setting_items": {
                                         "type": "array",
                                         "items": {
                                             "properties": {
@@ -97,13 +142,13 @@
             },
             "delete": {
                 "tags": [
-                    "Modes"
+                    "Settings"
                 ],
                 "summary": "Удаление режима звонков",
-                "operationId": "delete_mode",
+                "operationId": "delete_setting",
                 "parameters": [
                     {
-                        "name": "modeId",
+                        "name": "settingId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -120,74 +165,20 @@
                     }
                 }
             }
-        },
-        "/api/v1/admin/modes": {
-            "get": {
-                "tags": [
-                    "Modes"
-                ],
-                "summary": "Получение списка режимов звонков",
-                "operationId": "get_modes",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Modes"
-                ],
-                "summary": "Создание режима звонков",
-                "operationId": "add_mode",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "timings": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "time_start": {
-                                                    "type": "string"
-                                                },
-                                                "time_end": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
         "securitySchemes": {
             "token": {
                 "type": "apiKey",
-                "description": "Enter token in string format",
+                "description": "Enter token in string format!",
                 "name": "token",
+                "in": "header"
+            },
+            "x_account_id": {
+                "type": "apiKey",
+                "description": "iDesk account ID",
+                "name": "X-Account-Id",
                 "in": "header"
             }
         }
@@ -195,11 +186,18 @@
     "security": [
         {
             "token": [
-                "get_modes",
-                "add_mode",
-                "edit_mode",
-                "show_mode",
-                "delete_mode"
+                "get_settings",
+                "add_setting",
+                "edit_setting",
+                "show_setting",
+                "delete_setting"
+            ],
+            "x_account_id": [
+                "get_settings",
+                "add_setting",
+                "edit_setting",
+                "show_setting",
+                "delete_setting"
             ]
         }
     ]

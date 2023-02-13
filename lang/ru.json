@@ -1,0 +1,9 @@
+{
+    "Validation error": "Ошибка валидации",
+    "Server error": "Ошибка сервера",
+    "Not found": "Не найдено",
+    "TimeEnd after TimeStart": "Время окончания должно быть больше времени начала",
+    "Time not format 00:00": "Время должно иметь формат 00:00",
+    "(and :count more error)": "(И еще :count ошибка)", 
+    "(and :count more errors)": "(И еще несколько ошибок)"
+}

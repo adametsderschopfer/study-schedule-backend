@@ -11,6 +11,8 @@ class Account extends Model
 {
     use HasFactory;
 
+    public const EXTERNAL_ACCOUNT_ID_HEADER_KEY = 'X-Account-Id';
+
     protected $fillable = [
         'external_id', 
         'name',
@@ -19,6 +21,8 @@ class Account extends Model
     ];
 
     protected $hidden = [
+        'id',
+        'external_id',
     ];
 
     protected $casts = [
@@ -26,28 +30,34 @@ class Account extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function getId(): string
+    public function getData(): array
     {
-        return $this->id;
+        return [
+            'id' => $this->id,
+            'external_id' =>  $this->external_id,
+            'email' => $this->email,
+            'name' => $this->name,
+            'role' => $this->role
+        ];
     }
 
-    public function getExternalId(): string
+    public static function saveOrCreate(ExternalAccount $externalAccount)
     {
-        return $this->external_id;
-    }
-
-    public static function saveOrCreate(ExternalAccount $externalAccount): bool
-    {
-        $account = Account::where('external_id', $externalAccount->getId())->first();
+        $account = Account::where('external_id', $externalAccount->getExternalId())->first();
 
         $data = $externalAccount->serialize();
 
         if ($account) {
             $account->update($data);
         } else {
-            Account::create($data);
+            $account = Account::create($data);
         }
 
-        return true;
+        return $account->fresh();
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

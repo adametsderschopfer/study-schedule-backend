@@ -6,13 +6,13 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/v1/admin/settings": {
+        "/api/v1/admin/schedule_settings": {
             "get": {
                 "tags": [
-                    "Settings"
+                    "Schedule settings"
                 ],
                 "summary": "Получение списка режимов звонков",
-                "operationId": "get_settings",
+                "operationId": "get_schedule_settings",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -24,10 +24,10 @@
             },
             "post": {
                 "tags": [
-                    "Settings"
+                    "Schedule settings"
                 ],
                 "summary": "Создание режима звонков",
-                "operationId": "add_setting",
+                "operationId": "add_schedule_setting",
                 "parameters": [
                     {
                         "name": "name",
@@ -56,16 +56,16 @@
                 }
             }
         },
-        "/api/v1/admin/settings/{settingId}": {
+        "/api/v1/admin/schedule_settings/{scheduleSettingId}": {
             "get": {
                 "tags": [
-                    "Settings"
+                    "Schedule settings"
                 ],
                 "summary": "Получение одного режима звонков",
-                "operationId": "show_setting",
+                "operationId": "show_schedule_setting",
                 "parameters": [
                     {
-                        "name": "settingId",
+                        "name": "scheduleSettingId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -84,13 +84,13 @@
             },
             "put": {
                 "tags": [
-                    "Settings"
+                    "Schedule settings"
                 ],
                 "summary": "Обновление режима звонков",
-                "operationId": "edit_setting",
+                "operationId": "edit_schedule_setting",
                 "parameters": [
                     {
-                        "name": "settingId",
+                        "name": "scheduleSettingId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -111,7 +111,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "setting_items": {
+                                    "schedule_setting_items": {
                                         "type": "array",
                                         "items": {
                                             "properties": {
@@ -142,13 +142,13 @@
             },
             "delete": {
                 "tags": [
-                    "Settings"
+                    "Schedule settings"
                 ],
                 "summary": "Удаление режима звонков",
-                "operationId": "delete_setting",
+                "operationId": "delete_schedule_setting",
                 "parameters": [
                     {
-                        "name": "settingId",
+                        "name": "scheduleSettingId",
                         "in": "path",
                         "required": true,
                         "schema": {

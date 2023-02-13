@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68342f488e0e0b873cbc3c3178347c56",
+    "content-hash": "56eb782c4df982dd38bd7a4a88341d88",
     "packages": [
         {
             "name": "brick/math",
@@ -5989,6 +5989,81 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.0.1"
             },
             "time": "2020-07-09T08:09:16+00:00"
+        },
+        {
+            "name": "laravel-lang/lang",
+            "version": "12.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Laravel-Lang/lang.git",
+                "reference": "8a39a41d47c82a70c1d5e6e25bc271bbcae7032a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/8a39a41d47c82a70c1d5e6e25bc271bbcae7032a",
+                "reference": "8a39a41d47c82a70c1d5e6e25bc271bbcae7032a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*"
+            },
+            "conflict": {
+                "laravel-lang/publisher": "<14.0"
+            },
+            "require-dev": {
+                "laravel-lang/publisher": "^14.0",
+                "laravel-lang/status-generator": "^1.11.1",
+                "php": "^8.1",
+                "phpunit/phpunit": "^9.5",
+                "symfony/var-dumper": "^5.0 || ^6.0"
+            },
+            "suggest": {
+                "arcanedev/laravel-lang": "Translations manager and checker for Laravel",
+                "laravel-lang/attributes": "Translations for field names of the forms",
+                "laravel-lang/http-statuses": "Translations for HTTP statuses",
+                "laravel-lang/publisher": "Easy installation and update of translation files for your project"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelLang\\Lang\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelLang\\Lang\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laravel-Lang Team",
+                    "homepage": "https://github.com/Laravel-Lang"
+                }
+            ],
+            "description": "Languages for Laravel",
+            "keywords": [
+                "lang",
+                "languages",
+                "laravel",
+                "lpm"
+            ],
+            "support": {
+                "issues": "https://github.com/Laravel-Lang/lang/issues",
+                "source": "https://github.com/Laravel-Lang/lang"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/laravel-lang",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2023-02-13T08:31:17+00:00"
         },
         {
             "name": "laravel/pint",

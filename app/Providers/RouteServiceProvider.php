@@ -7,7 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use App\Models\Setting;
+use App\Models\ScheduleSetting;
 use App\Models\Account;
 
 class RouteServiceProvider extends ServiceProvider
@@ -40,7 +40,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->bindModels([
-            'setting' => Setting::class,
+            'setting' => ScheduleSetting::class,
         ]);
     }
 
@@ -71,7 +71,7 @@ class RouteServiceProvider extends ServiceProvider
             Route::bind($key, function ($id) use ($model, $account) {
                 return $model::where('id', $id)
                         ->where('account_id', $account->getId())
-                        ->first();
+                        ->first() ?? abort(404);
             });
         }
     }

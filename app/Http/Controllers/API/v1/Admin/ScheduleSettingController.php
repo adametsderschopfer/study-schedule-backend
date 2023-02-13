@@ -5,10 +5,10 @@ namespace App\Http\Controllers\API\v1\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
-use App\Models\Setting;
-use App\Http\Requests\SettingFormRequest;
+use App\Models\ScheduleSetting;
+use App\Http\Requests\ScheduleSettingFormRequest;
 
-class SettingController extends Controller
+class ScheduleSettingController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
@@ -16,10 +16,10 @@ class SettingController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/settings",
-     *   tags={"Settings"},
+     * path="/api/v1/admin/schedule_settings",
+     *   tags={"Schedule settings"},
      *   summary="Получение списка режимов звонков",
-     *   operationId="get_settings",
+     *   operationId="get_schedule_settings",
      * 
      *   @OA\Response(
      *      response=200,
@@ -34,20 +34,20 @@ class SettingController extends Controller
      */
     protected function index()
     {
-        return Setting::where('account_id', $this->accountService->getId())
-                ->with('setting_items')
+        return ScheduleSetting::where('account_id', $this->accountService->getId())
+                ->with('schedule_setting_items')
                 ->get();
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/settings/{settingId}",
-     *   tags={"Settings"},
+     * path="/api/v1/admin/schedule_settings/{scheduleSettingId}",
+     *   tags={"Schedule settings"},
      *   summary="Получение одного режима звонков",
-     *   operationId="show_setting",
+     *   operationId="show_schedule_setting",
      *
      *   @OA\Parameter(
-     *      name="settingId",
+     *      name="scheduleSettingId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -65,20 +65,20 @@ class SettingController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(Setting $setting)
+    protected function show(ScheduleSetting $scheduleSetting)
     {
-        return $setting->load('setting_items');
+        return $scheduleSetting->load('schedule_setting_items');
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/settings/{settingId}",
-     *   tags={"Settings"},
+     * path="/api/v1/admin/schedule_settings/{scheduleSettingId}",
+     *   tags={"Schedule settings"},
      *   summary="Удаление режима звонков",
-     *   operationId="delete_setting",
+     *   operationId="delete_schedule_setting",
      *
      *   @OA\Parameter(
-     *      name="settingId",
+     *      name="scheduleSettingId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -96,19 +96,19 @@ class SettingController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(Setting $setting)
+    protected function destroy(ScheduleSetting $scheduleSetting)
     {
-        $setting->delete();
+        $scheduleSetting->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/settings",
-     *      tags={"Settings"},
+     *      path="/api/v1/admin/schedule_settings",
+     *      tags={"Schedule settings"},
      *      summary="Создание режима звонков",
-     *      operationId="add_setting",
+     *      operationId="add_schedule_setting",
      * 
      *      @OA\Parameter(
      *          name="name",
@@ -139,40 +139,40 @@ class SettingController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(SettingFormRequest $request)
+    protected function store(ScheduleSettingFormRequest $request)
     {
         $input = $request->validated();
 
         $input['account_id'] = $this->accountService->getId();
 
-        $setting = Setting::create($input);
+        $scheduleSetting = ScheduleSetting::create($input);
 
-        $settingItems = [];
+        $scheduleSettingItems = [];
 
         if (isset($input['count']) && $input['count'] > 0) {
-            $settingItems = array_fill(0, $input['count'], []);
+            $scheduleSettingItems = array_fill(0, $input['count'], []);
         }
 
-        $setting->giveSettingItems($settingItems);
+        $scheduleSetting->giveScheduleSettingItems($scheduleSettingItems);
 
-        $setting->load([
-            'setting_items' => function ($q) {
+        $scheduleSetting->load([
+            'schedule_setting_items' => function ($q) {
                 $q->orderBy('offset', 'ASC');
             }
         ]);
         
-        return $setting;
+        return $scheduleSetting;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/settings/{settingId}",
-     *      tags={"Settings"},
+     *      path="/api/v1/admin/schedule_settings/{scheduleSettingId}",
+     *      tags={"Schedule settings"},
      *      summary="Обновление режима звонков",
-     *      operationId="edit_setting",
+     *      operationId="edit_schedule_setting",
      * 
      *      @OA\Parameter(
-     *          name="settingId",
+     *          name="scheduleSettingId",
      *          in="path",
      *          required=true,
      *          @OA\Schema(
@@ -192,7 +192,7 @@ class SettingController extends Controller
      *      @OA\RequestBody(
      *          @OA\JsonContent(
      *              type="object",
-     *              @OA\Property(property="setting_items", type="array",
+     *              @OA\Property(property="schedule_setting_items", type="array",
      *                  @OA\Items(type="object", properties = {
      *                      @OA\Property(property="time_start", type="string"),
      *                      @OA\Property(property="time_end", type="string"),
@@ -212,24 +212,24 @@ class SettingController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(Setting $setting, SettingFormRequest $request)
+    protected function update(ScheduleSetting $scheduleSetting, ScheduleSettingFormRequest $request)
     {
         $input = $request->validated();
 
-        if ($setting->update($input)) {
+        if ($scheduleSetting->update($input)) {
 
-            if (isset($input['setting_items'])) {
-                $setting->deleteSettingItems();
-                $setting->giveSettingItems($input['setting_items']);
+            if (isset($input['schedule_setting_items'])) {
+                $scheduleSetting->deleteScheduleSettingItems();
+                $scheduleSetting->giveScheduleSettingItems($input['schedule_setting_items']);
             }
 
-            $setting->load([
-                'setting_items' => function ($q) {
+            $scheduleSetting->load([
+                'schedule_setting_items' => function ($q) {
                     $q->orderBy('offset', 'ASC');
                 }
             ]);
     
-            return $setting;
+            return $scheduleSetting;
         }
 
         return $this->sendError(__('Server error'));

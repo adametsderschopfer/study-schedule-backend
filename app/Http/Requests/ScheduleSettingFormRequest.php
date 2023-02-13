@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SettingFormRequest extends FormRequest
+class ScheduleSettingFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,9 @@ class SettingFormRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'count' => ['sometimes', 'integer', 'max:99'], 
-            'setting_items' => ['sometimes', 'array'], 
-            'setting_items.*.time_start' => ['sometimes', 'date_format:H:i'],
-            'setting_items.*.time_end' => ['sometimes', 'date_format:H:i', 'after_or_equal:setting_items.*.time_start'],
+            'schedule_setting_items' => ['sometimes', 'array'], 
+            'schedule_setting_items.*.time_start' => ['sometimes', 'date_format:H:i'],
+            'schedule_setting_items.*.time_end' => ['sometimes', 'date_format:H:i', 'after_or_equal:schedule_setting_items.*.time_start'],
         ];
     }
 
@@ -40,8 +40,8 @@ class SettingFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'setting_items.*.time_end.after_or_equal' => __('TimeEnd after TimeStart'),
-            'setting_items.*.*.date_format' => __('Time not format 00:00'),
+            'schedule_setting_items.*.time_end.after_or_equal' => __('TimeEnd after TimeStart'),
+            'schedule_setting_items.*.*.date_format' => __('Time not format 00:00'),
         ];
     }
 

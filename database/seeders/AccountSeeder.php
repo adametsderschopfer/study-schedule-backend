@@ -16,7 +16,7 @@ class AccountSeeder extends Seeder
     public function run()
     {
         Account::firstOrCreate([
-            'external_id' => 21, 
+            'external_id' => 2, 
             'email' => 'hotel@fake.com',
             'name' => 'Administrator', 
             'role' => 'Client',

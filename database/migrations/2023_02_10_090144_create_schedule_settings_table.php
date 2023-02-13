@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('schedule_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id');
             $table->string('name')->nullable();
@@ -29,9 +29,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->dropForeign('settings_account_id_foreign');
+        Schema::table('schedule_settings', function (Blueprint $table) {
+            $table->dropForeign('schedule_settings_account_id_foreign');
         });
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('schedule_settings');
     }
 };

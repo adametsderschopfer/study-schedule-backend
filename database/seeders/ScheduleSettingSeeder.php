@@ -18,13 +18,13 @@ class ScheduleSettingSeeder extends Seeder
     {
         $account_id = Account::first()->getId();
 
-        $scheduleSetting = ScheduleSetting::firstOrCreate([
-            'account_id' => $account_id, 
-            'name' => 'Test setting',
+        $scheduleSettings = ScheduleSetting::factory()->count(3)->create([
+            'account_id' => $account_id,
         ]);
 
-        $scheduleSettingItems = array_fill(0, 3, []);
-
-        $scheduleSetting->giveScheduleSettingItems($scheduleSettingItems);
+        foreach ($scheduleSettings as $scheduleSetting) {
+            $scheduleSettingItems = array_fill(0, 3, []);
+            $scheduleSetting->giveScheduleSettingItems($scheduleSettingItems);
+        }
     }
 }

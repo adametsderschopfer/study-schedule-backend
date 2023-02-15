@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Setting>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ScheduleSetting>
  */
-class SettingFactory extends Factory
+class ScheduleSettingFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class SettingFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name,
         ];
     }
 }

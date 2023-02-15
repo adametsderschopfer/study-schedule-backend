@@ -37,7 +37,7 @@ class ScheduleSetting extends Model
 
         foreach ($scheduleSettingItems as $item) {
             $item['schedule_setting_id'] = $this->id;
-            $item['offset'] = $i;
+            $item['order'] = $i;
 
             ScheduleSettingItem::create($item);
 

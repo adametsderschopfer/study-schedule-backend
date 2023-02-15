@@ -15,10 +15,8 @@ class AccountSeeder extends Seeder
      */
     public function run()
     {
-        Account::firstOrCreate([
+        Account::factory()->count(1)->create([
             'external_id' => 2, 
-            'email' => 'hotel@fake.com',
-            'name' => 'Administrator', 
             'role' => 'Client',
         ]);
     }

@@ -13,20 +13,20 @@ class ScheduleSettingItem extends Model
         'schedule_setting_id', 
         'time_start',
         'time_end',
-        'offset'
+        'order'
     ];
 
     protected $hidden = [
         'id',
         'schedule_setting_id',
-        'offset'
+        'order'
     ];
 
     protected $casts = [
         'schedule_setting_id' => 'integer', 
         'time_start' => 'datetime:H:i',
         'time_end' => 'datetime:H:i',
-        'offset' => 'integer'
+        'order' => 'integer'
     ];
 
     public $timestamps = false;

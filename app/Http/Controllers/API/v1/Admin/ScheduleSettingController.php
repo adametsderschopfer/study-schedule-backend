@@ -157,7 +157,7 @@ class ScheduleSettingController extends Controller
 
         $scheduleSetting->load([
             'schedule_setting_items' => function ($q) {
-                $q->orderBy('offset', 'ASC');
+                $q->orderBy('order', 'ASC');
             }
         ]);
         
@@ -225,7 +225,7 @@ class ScheduleSettingController extends Controller
 
             $scheduleSetting->load([
                 'schedule_setting_items' => function ($q) {
-                    $q->orderBy('offset', 'ASC');
+                    $q->orderBy('order', 'ASC');
                 }
             ]);
     

@@ -7,8 +7,9 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use App\Models\ScheduleSetting;
 use App\Models\Account;
+use App\Models\ScheduleSetting;
+use App\Models\Faculty;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -40,7 +41,8 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->bindModels([
-            'setting' => ScheduleSetting::class,
+            'schedule_settings' => ScheduleSetting::class,
+            'faculties' => Faculty::class,
         ]);
     }
 

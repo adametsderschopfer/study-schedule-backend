@@ -43,11 +43,4 @@ class Department extends Model
             'account_id'
         );
     }
-
-    public static function facultyHasAccount(int $faculty_id, int $account_id): bool
-    {
-        return Faculty::where('id', $faculty_id)
-                            ->where('account_id', $account_id)
-                            ->first();
-    }
 }

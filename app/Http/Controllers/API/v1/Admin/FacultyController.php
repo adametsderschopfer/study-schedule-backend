@@ -53,6 +53,7 @@ class FacultyController extends Controller
      *           type="integer"
      *      )
      *   ),
+     * 
      *   @OA\Response(
      *      response=200,
      *      description="Success",

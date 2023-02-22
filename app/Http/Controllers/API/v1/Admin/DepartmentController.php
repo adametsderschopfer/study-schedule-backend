@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
 use App\Models\Faculty;
-use App\Http\Requests\FacultyFormRequest;
+use App\Models\Department;
+use App\Http\Requests\DepartmentFormRequest;
 
-class FacultyController extends Controller
+class DepartmentController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
@@ -16,10 +17,19 @@ class FacultyController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/faculties",
-     *   tags={"Faculties"},
-     *   summary="Получение списка факультетов",
-     *   operationId="get_faculties",
+     * path="/api/v1/admin/departments/{departmentId}",
+     *   tags={"Departments"},
+     *   summary="Получение одной кафедры",
+     *   operationId="show_department",
+     *
+     *   @OA\Parameter(
+     *      name="departmentId",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -32,21 +42,30 @@ class FacultyController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function index()
+    protected function index(Request $request)
     {
-        return Faculty::where('account_id', $this->accountService->getId())
-                ->get();
+        $input = $request->only('faculty_id');
+
+        $input['account_id'] = $this->accountService->getId();
+
+        $faculty = Faculty::findOrFail($input['faculty_id']);
+
+        if (!$faculty->hasAccount($this->accountService->getId())) {
+            abort(404);
+        }
+
+        return $faculty->departments;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/faculties/{facultyId}",
-     *   tags={"Faculties"},
-     *   summary="Получение одного факультета",
-     *   operationId="show_faculty",
+     * path="/api/v1/admin/departments/{departmentId}",
+     *   tags={"Departments"},
+     *   summary="Получение одной кафедры",
+     *   operationId="show_department",
      *
      *   @OA\Parameter(
-     *      name="facultyId",
+     *      name="departmentId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -65,20 +84,20 @@ class FacultyController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(Faculty $faculty)
+    protected function show(Department $department)
     {
-        return $faculty;
+        return $department;
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/faculties/{facultyId}",
-     *   tags={"Faculties"},
-     *   summary="Удаление факультета",
-     *   operationId="delete_faculty",
+     * path="/api/v1/admin/departments/{departmentId}",
+     *   tags={"Departments"},
+     *   summary="Удаление кафедры",
+     *   operationId="delete_department",
      *
      *   @OA\Parameter(
-     *      name="facultyId",
+     *      name="departmentId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -96,22 +115,31 @@ class FacultyController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(Faculty $faculty)
+    protected function destroy(Department $department)
     {
-        $faculty->delete();
+        $department->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/faculties",
-     *      tags={"Faculties"},
-     *      summary="Создание факультета",
-     *      operationId="add_faculty",
+     *      path="/api/v1/admin/departments",
+     *      tags={"Departments"},
+     *      summary="Создание кафедры",
+     *      operationId="add_department",
      * 
      *      @OA\Parameter(
      *          name="name",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="faculty_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -130,23 +158,38 @@ class FacultyController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(FacultyFormRequest $request)
+    protected function store(DepartmentFormRequest $request)
     {
         $input = $request->validated();
 
         $input['account_id'] = $this->accountService->getId();
-
-        $faculty = Faculty::create($input);
         
-        return $faculty;
+        $faculty = Faculty::findOrFail($input['faculty_id']);
+
+        if (!$faculty->hasAccount($this->accountService->getId())) {
+            abort(404);
+        }
+
+        $department = Department::create($input);
+
+        return $department;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/faculties/{facultyId}",
-     *      tags={"Faculties"},
-     *      summary="Обновление факультета",
-     *      operationId="edit_faculty",
+     *      path="/api/v1/admin/departments/{departmentId}",
+     *      tags={"Departments"},
+     *      summary="Обновление кафедры",
+     *      operationId="edit_department",
+     * 
+     *      @OA\Parameter(
+     *          name="departmentId",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      * 
      *      @OA\Parameter(
      *          name="facultyId",
@@ -177,12 +220,20 @@ class FacultyController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(Faculty $faculty, FacultyFormRequest $request)
+    protected function update(Department $department, DepartmentFormRequest $request)
     {
         $input = $request->validated();
 
-        if ($faculty->update($input)) {
-            return $faculty;
+        $input['account_id'] = $this->accountService->getId();
+        
+        $faculty = Faculty::findOrFail($input['faculty_id']);
+
+        if (!$faculty->hasAccount($this->accountService->getId())) {
+            abort(404);
+        }
+
+        if ($department->update($input)) {
+            return $department;
         }
 
         return $this->sendError(__('Server error'));

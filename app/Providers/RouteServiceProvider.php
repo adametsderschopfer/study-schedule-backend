@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Account;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
+use App\Models\Department;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -40,9 +41,31 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
+        // $this->bindModels([
+        //     'scheduleSetting' => ScheduleSetting::class,
+        //     'faculty' => Faculty::class,
+        // ]);
+
+        // $this->bindModelsThrough([
+        //     'department' => Department::class,
+        // ]);
+
         $this->bindModels([
-            'schedule_settings' => ScheduleSetting::class,
-            'faculties' => Faculty::class,
+            [
+                'key' => 'scheduleSetting',
+                'model' => ScheduleSetting::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'faculty',
+                'model' => Faculty::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'department',
+                'model' => Department::class,
+                'isThrough' => true
+            ]
         ]);
     }
 
@@ -62,18 +85,30 @@ class RouteServiceProvider extends ServiceProvider
     {
         $headers = getallheaders();
         
-        foreach ($bindings as $key => $model) {
+        foreach ($bindings as $binding) {
             $account = Account::where('external_id', $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY] ?? null)->first();
 
             if (!$account) {
                 return;
             }
 
+            $key = $binding['key'];
+            $model = $binding['model'];
+            $isThrough = $binding['isThrough'];
+
             Route::model($key, $model);
-            Route::bind($key, function ($id) use ($model, $account) {
-                return $model::where('id', $id)
-                        ->where('account_id', $account->getId())
-                        ->first() ?? abort(404);
+            Route::bind($key, function ($id) use ($model, $account, $isThrough) {
+                if ($isThrough) {
+                    $entity = $model::where('id', $id)->first() ?? abort(404);
+                    if ($entity->account->getId() == $account->getId()) {
+                        return $entity;
+                    }
+                    abort(404);
+                } else {
+                    return $model::where('id', $id)
+                            ->where('account_id', $account->getId())
+                            ->first() ?? abort(404);
+                }
             });
         }
     }

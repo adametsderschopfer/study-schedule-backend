@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Department;
 
 class Faculty extends Model
 {
@@ -24,4 +25,17 @@ class Faculty extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class);
+    }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->account_id == $account_id) {
+            return true;
+        }
+        return false;
+    }
 }

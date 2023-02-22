@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
 
 class Department extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'faculty_id', 
@@ -20,11 +22,13 @@ class Department extends Model
         'created_at',
         'updated_at',
         'account',
+        'deleted_at',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function faculty()

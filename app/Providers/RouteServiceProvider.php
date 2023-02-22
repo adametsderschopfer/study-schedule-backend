@@ -41,15 +41,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        // $this->bindModels([
-        //     'scheduleSetting' => ScheduleSetting::class,
-        //     'faculty' => Faculty::class,
-        // ]);
-
-        // $this->bindModelsThrough([
-        //     'department' => Department::class,
-        // ]);
-
         $this->bindModels([
             [
                 'key' => 'scheduleSetting',

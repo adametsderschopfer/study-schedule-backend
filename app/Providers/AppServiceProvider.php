@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Account;
+use App\Models\ScheduleSetting;
+use App\Models\Faculty;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Account::deleted(function ($account) {
+            $account->schedule_settings()->delete();
+            $account->faculties()->delete();
+        });
+
+        Account::restored(function($account) {
+            $account->schedule_settings()->withTrashed()->restore();
+            $account->faculties()->withTrashed()->restore();
+        });
+
+        ScheduleSetting::deleted(function ($schedule_setting) {
+            $schedule_setting->schedule_setting_items()->delete();
+        });
+
+        Faculty::deleted(function ($faculty) {
+            $faculty->departments()->delete();
+        });
+
+        Faculty::restored(function ($faculty) {
+            $faculty->departments()->withTrashed()->restore();
+        });
     }
 }

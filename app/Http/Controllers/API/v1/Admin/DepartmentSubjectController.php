@@ -5,11 +5,11 @@ namespace App\Http\Controllers\API\v1\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
-use App\Models\Faculty;
+use App\Models\DepartmentSubject;
 use App\Models\Department;
-use App\Http\Requests\DepartmentFormRequest;
+use App\Http\Requests\DepartmentSubjectFormRequest;
 
-class DepartmentController extends Controller
+class DepartmentSubjectController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
@@ -17,13 +17,13 @@ class DepartmentController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/departments?faculty_id={facultyId}",
-     *   tags={"Departments"},
-     *   summary="Получение списка кафедр",
-     *   operationId="get_departments",
+     * path="/api/v1/admin/department_subjects?department_id={departmentId}",
+     *   tags={"Department Subjects"},
+     *   summary="Получение списка предметов",
+     *   operationId="get_department_subjects",
      * 
      *   @OA\Parameter(
-     *      name="facultyId",
+     *      name="departmentId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -44,28 +44,26 @@ class DepartmentController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('faculty_id');
+        $input = $request->only('department_id');
 
-        $input['account_id'] = $this->accountService->getId();
+        $department = Department::findOrFail($input['department_id']);
 
-        $faculty = Faculty::findOrFail($input['faculty_id']);
-
-        if (!$faculty->hasAccount($this->accountService->getId())) {
+        if (!$department->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        return $faculty->departments;
+        return $department->department_subjects;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/departments/{departmentId}",
-     *   tags={"Departments"},
-     *   summary="Получение одной кафедры",
-     *   operationId="show_department",
+     * path="/api/v1/admin/department_subjects/{departmentSubjectId}",
+     *   tags={"Department Subjects"},
+     *   summary="Получение одного предмета",
+     *   operationId="show_department_subject",
      *
      *   @OA\Parameter(
-     *      name="departmentId",
+     *      name="departmentSubjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -84,20 +82,20 @@ class DepartmentController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(Department $department)
+    protected function show(DepartmentSubject $departmentSubject)
     {
-        return $department->load('department_subjects');
+        return $departmentSubject;
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/departments/{departmentId}",
-     *   tags={"Departments"},
-     *   summary="Удаление кафедры",
-     *   operationId="delete_department",
+     * path="/api/v1/admin/department_subjects/{departmentSubjectId}",
+     *   tags={"Department Subjects"},
+     *   summary="Удаление предмета",
+     *   operationId="delete_department_subject",
      *
      *   @OA\Parameter(
-     *      name="departmentId",
+     *      name="departmentSubjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -115,19 +113,19 @@ class DepartmentController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(Department $department)
+    protected function destroy(DepartmentSubject $departmentSubject)
     {
-        $department->delete();
+        $departmentSubject->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/departments",
-     *      tags={"Departments"},
-     *      summary="Создание кафедры",
-     *      operationId="add_department",
+     *      path="/api/v1/admin/department_subjects",
+     *      tags={"Department Subjects"},
+     *      summary="Создание предмета",
+     *      operationId="add_department_subject",
      * 
      *      @OA\Parameter(
      *          name="name",
@@ -139,7 +137,7 @@ class DepartmentController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="faculty_id",
+     *          name="department_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -158,32 +156,30 @@ class DepartmentController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(DepartmentFormRequest $request)
+    protected function store(DepartmentSubjectFormRequest $request)
     {
         $input = $request->validated();
 
-        $input['account_id'] = $this->accountService->getId();
-        
-        $faculty = Faculty::findOrFail($input['faculty_id']);
+        $department = Department::findOrFail($input['department_id']);
 
-        if (!$faculty->hasAccount($this->accountService->getId())) {
+        if (!$department->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        $department = Department::create($input);
+        $departmentSubject = DepartmentSubject::create($input);
 
-        return $department;
+        return $departmentSubject;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/departments/{departmentId}",
-     *      tags={"Departments"},
-     *      summary="Обновление кафедры",
-     *      operationId="edit_department",
+     *      path="/api/v1/admin/department_subjects/{departmentSubjectId}",
+     *      tags={"Department Subjects"},
+     *      summary="Обновление предмета",
+     *      operationId="edit_department_subject",
      * 
      *      @OA\Parameter(
-     *          name="departmentId",
+     *          name="departmentSubjectId",
      *          in="path",
      *          required=true,
      *          @OA\Schema(
@@ -192,7 +188,7 @@ class DepartmentController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="faculty_id",
+     *          name="department_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -220,20 +216,18 @@ class DepartmentController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(Department $department, DepartmentFormRequest $request)
+    protected function update(DepartmentSubject $departmentSubject, DepartmentSubjectFormRequest $request)
     {
         $input = $request->validated();
-
-        $input['account_id'] = $this->accountService->getId();
         
-        $faculty = Faculty::findOrFail($input['faculty_id']);
+        $department = Department::findOrFail($input['department_id']);
 
-        if (!$faculty->hasAccount($this->accountService->getId())) {
+        if (!$department->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        if ($department->update($input)) {
-            return $department->load('department_subjects');
+        if ($departmentSubject->update($input)) {
+            return $departmentSubject;
         }
 
         return $this->sendError(__('Server error'));

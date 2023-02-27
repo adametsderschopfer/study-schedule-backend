@@ -11,6 +11,7 @@ use App\Models\Account;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\DepartmentSubject;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -55,6 +56,12 @@ class RouteServiceProvider extends ServiceProvider
             [
                 'key' => 'department',
                 'model' => Department::class,
+                'isThrough' => true
+            ]
+            ,
+            [
+                'key' => 'department_subject',
+                'model' => DepartmentSubject::class,
                 'isThrough' => true
             ]
         ]);

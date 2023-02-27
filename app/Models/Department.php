@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
+use App\Models\DepartmentSubject;
 
 class Department extends Model
 {
@@ -46,5 +47,18 @@ class Department extends Model
             'faculty_id', 
             'account_id'
         );
+    }
+
+    public function department_subjects()
+    {
+        return $this->hasMany(DepartmentSubject::class);
+    }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->account->id == $account_id) {
+            return true;
+        }
+        return false;
     }
 }

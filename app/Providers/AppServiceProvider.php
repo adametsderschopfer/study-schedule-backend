@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\Account;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
+use App\Models\Department;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,14 @@ class AppServiceProvider extends ServiceProvider
 
         Faculty::restored(function ($faculty) {
             $faculty->departments()->withTrashed()->restore();
+        });
+
+        Department::deleted(function ($department) {
+            $department->department_subjects()->delete();
+        });
+
+        Department::restored(function ($department) {
+            $department->department_subjects()->withTrashed()->restore();
         });
     }
 }

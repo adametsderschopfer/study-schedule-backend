@@ -86,7 +86,8 @@ class DepartmentController extends Controller
      */
     protected function show(Department $department)
     {
-        return $department->load('department_subjects');
+        return $department->load('department_subjects')
+                        ->load('department_groups');
     }
 
      /**
@@ -233,7 +234,8 @@ class DepartmentController extends Controller
         }
 
         if ($department->update($input)) {
-            return $department->load('department_subjects');
+            return $department->load('department_subjects')
+                            ->load('department_groups');
         }
 
         return $this->sendError(__('Server error'));

@@ -52,11 +52,13 @@ class AppServiceProvider extends ServiceProvider
         Department::deleted(function ($department) {
             $department->department_subjects()->delete();
             $department->department_groups()->delete();
+            $department->department_teachers()->delete();
         });
 
         Department::restored(function ($department) {
             $department->department_subjects()->withTrashed()->restore();
             $department->department_groups()->withTrashed()->restore();
+            $department->department_teachers()->withTrashed()->restore();
         });
     }
 }

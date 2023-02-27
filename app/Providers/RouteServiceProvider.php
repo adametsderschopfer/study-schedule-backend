@@ -13,6 +13,7 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
+use App\Models\DepartmentTeacher;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -43,33 +44,39 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        // $this->bindModels([
-        //     [
-        //         'key' => 'scheduleSetting',
-        //         'model' => ScheduleSetting::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'faculty',
-        //         'model' => Faculty::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'department',
-        //         'model' => Department::class,
-        //         'isThrough' => true
-        //     ],
-        //     [
-        //         'key' => 'department_subject',
-        //         'model' => DepartmentSubject::class,
-        //         'isThrough' => true
-        //     ],
-        //     [
-        //         'key' => 'department_group',
-        //         'model' => DepartmentGroup::class,
-        //         'isThrough' => true
-        //     ]
-        // ]);
+        $this->bindModels([
+            [
+                'key' => 'scheduleSetting',
+                'model' => ScheduleSetting::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'faculty',
+                'model' => Faculty::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'department',
+                'model' => Department::class,
+                'isThrough' => true
+            ],
+            [
+                'key' => 'department_subject',
+                'model' => DepartmentSubject::class,
+                'isThrough' => true
+            ],
+            [
+                'key' => 'department_group',
+                'model' => DepartmentGroup::class,
+                'isThrough' => true
+            ]
+            ,
+            [
+                'key' => 'department_group',
+                'model' => DepartmentTeacher::class,
+                'isThrough' => true
+            ]
+        ]);
     }
 
     /**

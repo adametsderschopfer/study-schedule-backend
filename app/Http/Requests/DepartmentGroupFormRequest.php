@@ -25,10 +25,10 @@ class DepartmentGroupFormRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'sub_group' => ['required', 'integer'],
-            'degree' => ['required', 'integer'],
-            'year_of_education' => ['required', 'integer'],
-            'form_of_education' => ['required', 'integer'],
+            'sub_group' => ['sometimes', 'integer'],
+            'degree' => ['sometimes', 'integer'],
+            'year_of_education' => ['sometimes', 'integer'],
+            'form_of_education' => ['sometimes', 'integer'],
             'department_id' => ['required', 'integer', 'exists:App\Models\Department,id'],
         ];
     }

@@ -33,7 +33,7 @@ class TeacherController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/department_teachers?parent_id={parentId}",
+     * path="/api/v1/admin/teachers?parent_id={parentId}",
      *   tags={"Teachers"},
      *   summary="Получение списка преподавателей",
      *   operationId="get_teachers",
@@ -109,7 +109,7 @@ class TeacherController extends Controller
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/department_teachers/{teacherId}",
+     * path="/api/v1/admin/teachers/{teacherId}",
      *   tags={"Teachers"},
      *   summary="Удаление преподавателя",
      *   operationId="delete_teacher",

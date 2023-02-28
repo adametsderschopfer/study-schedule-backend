@@ -17,7 +17,9 @@ class TeacherFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'full_name' => $this->faker->name,
+            'position' => $this->faker->jobTitle,
+            'degree' => $this->faker->company,
         ];
     }
 }

@@ -88,7 +88,7 @@ class DepartmentController extends Controller
     {
         return $department->load('department_subjects')
                 ->load('department_groups')
-                ->load('department_teachers');
+                ->load('teachers');
     }
 
      /**
@@ -237,7 +237,7 @@ class DepartmentController extends Controller
         if ($department->update($input)) {
             return $department->load('department_subjects')
                     ->load('department_groups')
-                    ->load('department_teachers');
+                    ->load('teachers');
         }
 
         return $this->sendError(__('Server error'));

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
 use App\Models\DepartmentSubject;
+use App\Models\DepartmentGroup;
 
 class Department extends Model
 {
@@ -52,6 +53,11 @@ class Department extends Model
     public function department_subjects()
     {
         return $this->hasMany(DepartmentSubject::class);
+    }
+
+    public function department_groups()
+    {
+        return $this->hasMany(DepartmentGroup::class);
     }
 
     public function hasAccount(int $account_id): bool

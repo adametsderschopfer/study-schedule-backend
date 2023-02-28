@@ -29,12 +29,14 @@ class Account extends Model
         'name',
         'email',
         'role',
+        'type'
     ];
 
     protected $hidden = [
         'id',
         'external_id',
         'deleted_at',
+        'type'
     ];
 
     protected $casts = [
@@ -50,7 +52,8 @@ class Account extends Model
             'external_id' =>  $this->external_id,
             'email' => $this->email,
             'name' => $this->name,
-            'role' => $this->role
+            'role' => $this->role,
+            'type' => $this->type
         ];
     }
 
@@ -64,7 +67,7 @@ class Account extends Model
 
     public function teachers()
     {
-        return $this->morphToMany(Teacher::class, 'teacherable');
+        return $this->hasMany(Teacher::class);
     }
 
     public function hasAccount(int $account_id): bool

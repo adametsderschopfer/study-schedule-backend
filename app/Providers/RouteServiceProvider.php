@@ -79,7 +79,7 @@ class RouteServiceProvider extends ServiceProvider
             [
                 'key' => 'teacher',
                 'model' => Teacher::class,
-                'isThrough' => true
+                'isThrough' => false
             ]
         ]);
     }

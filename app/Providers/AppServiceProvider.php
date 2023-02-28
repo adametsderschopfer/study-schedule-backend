@@ -30,11 +30,13 @@ class AppServiceProvider extends ServiceProvider
         Account::deleted(function ($account) {
             $account->schedule_settings()->delete();
             $account->faculties()->delete();
+            $account->teachers()->delete();
         });
 
         Account::restored(function($account) {
             $account->schedule_settings()->withTrashed()->restore();
             $account->faculties()->withTrashed()->restore();
+            $account->teachers()->withTrashed()->restore();
         });
 
         ScheduleSetting::deleted(function ($schedule_setting) {

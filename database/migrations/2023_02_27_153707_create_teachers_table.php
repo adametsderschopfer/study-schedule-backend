@@ -15,11 +15,13 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id');
             $table->string('full_name')->index();
             $table->string('position')->nullable();
             $table->string('degree')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
         });
 
         Schema::create('teacherables', function (Blueprint $table)  {
@@ -36,6 +38,9 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('teachers', function (Blueprint $table) {
+            $table->dropForeign('teachers_account_id_foreign');
+        });
         Schema::dropIfExists('teacherables');
         Schema::dropIfExists('teachers');
     }

@@ -135,7 +135,11 @@ class TeacherController extends Controller
      */
     protected function destroy(Teacher $teacher)
     {
+        // $parent->teachers();
         $teacher->delete();
+
+        // $teacher->faculties()->detach();
+        // $teacher->departments()->detach();
 
         return $this->sendResponse();
     }
@@ -206,6 +210,7 @@ class TeacherController extends Controller
         }
 
         $teacher = new Teacher;
+        $teacher->account_id = $input['account_id'];
         $teacher->full_name = $input['full_name'];
         $teacher->position = $input['position'];
         $teacher->degree = $input['degree'];
@@ -288,11 +293,11 @@ class TeacherController extends Controller
             abort(404);
         }
 
+        $teacher->account_id = $this->accountService->getId();
         $teacher->full_name = $input['full_name'];
         $teacher->position = $input['position'];
         $teacher->degree = $input['degree'];
 
-        $teacher->account()->detach();
         $teacher->faculties()->detach();
         $teacher->departments()->detach();
 

@@ -67,7 +67,7 @@ class FacultyController extends Controller
      */
     protected function show(Faculty $faculty)
     {
-        return $faculty;
+        return $faculty->load('teachers');
     }
 
      /**
@@ -182,7 +182,7 @@ class FacultyController extends Controller
         $input = $request->validated();
 
         if ($faculty->update($input)) {
-            return $faculty;
+            return $faculty->load('teachers');
         }
 
         return $this->sendError(__('Server error'));

@@ -9,6 +9,7 @@ use App\Http\Controllers\API\v1\Admin\DepartmentController;
 use App\Http\Controllers\API\v1\Admin\DepartmentSubjectController;
 use App\Http\Controllers\API\v1\Admin\DepartmentGroupController;
 use App\Http\Controllers\API\v1\Admin\DepartmentTeacherController;
+use App\Http\Controllers\API\v1\Admin\TeacherController;
 
 Route::prefix('v1')->group(function()
 {
@@ -23,5 +24,6 @@ Route::prefix('v1')->group(function()
         Route::resource('department_subjects', DepartmentSubjectController::class);
         Route::resource('department_groups', DepartmentGroupController::class);
         Route::resource('department_teachers', DepartmentTeacherController::class);
+        Route::resource('teachers', TeacherController::class);
     });
 });

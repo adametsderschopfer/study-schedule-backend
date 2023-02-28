@@ -56,4 +56,9 @@ class AccountRepository implements AccountService
     {
         return $this->id;
     }
+
+    public function getType(): int
+    {
+        return $this->type;
+    }
 }

@@ -5,24 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Faculty;
 use App\Models\Department;
-use App\Models\Teacher;
 
-class Faculty extends Model
+class Teacher extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $fillable = [
-        'account_id', 
-        'name'
+        'full_name',
+        'position', 
+        'degree'
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at',
-        'account_id',
+        'account',
         'deleted_at',
+        'pivot'
     ];
 
     protected $casts = [
@@ -31,21 +33,23 @@ class Faculty extends Model
         'deleted_at' => 'datetime',
     ];
 
+    public function teacherable()
+    {
+        return $this->morphTo();
+    }
+
+    public function faculties()
+    {
+        return $this->morphedByMany(Faculty::class, 'teacherable');
+    }
+
+    public function account()
+    {
+        return $this->morphOne(Account::class, 'teacherable');
+    }
+
     public function departments()
     {
-        return $this->hasMany(Department::class);
-    }
-
-    public function teachers()
-    {
-        return $this->morphToMany(Teacher::class, 'teacherable');
-    }
-
-    public function hasAccount(int $account_id): bool
-    {
-        if ($this->account_id == $account_id) {
-            return true;
-        }
-        return false;
+        return $this->morphedByMany(Department::class, 'teacherable');
     }
 }

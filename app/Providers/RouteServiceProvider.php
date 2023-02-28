@@ -14,6 +14,7 @@ use App\Models\Department;
 use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
 use App\Models\DepartmentTeacher;
+use App\Models\Teacher;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -69,11 +70,15 @@ class RouteServiceProvider extends ServiceProvider
                 'key' => 'department_group',
                 'model' => DepartmentGroup::class,
                 'isThrough' => true
-            ]
-            ,
+            ],
             [
                 'key' => 'department_group',
                 'model' => DepartmentTeacher::class,
+                'isThrough' => true
+            ],
+            [
+                'key' => 'teacher',
+                'model' => Teacher::class,
                 'isThrough' => true
             ]
         ]);

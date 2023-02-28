@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\DTO\ExternalAccount;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
+use App\Models\Teacher;
 
 class Account extends Model
 {
@@ -16,6 +17,12 @@ class Account extends Model
     use SoftDeletes;
 
     public const EXTERNAL_ACCOUNT_ID_HEADER_KEY = 'X-Account-Id';
+
+    public const TYPES = [
+        'UNIVERSITY' => 0,
+        'COLLEGE' => 1,
+        'SCHOOL' => 2
+    ];
 
     protected $fillable = [
         'external_id', 
@@ -53,6 +60,19 @@ class Account extends Model
 
     public function faculties() {
         return $this->hasMany(Faculty::class);
+    }
+
+    public function teachers()
+    {
+        return $this->morphToMany(Teacher::class, 'teacherable');
+    }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->id == $account_id) {
+            return true;
+        }
+        return false;
     }
 
     public static function saveOrCreate(ExternalAccount $externalAccount)

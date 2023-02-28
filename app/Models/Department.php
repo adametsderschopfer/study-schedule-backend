@@ -10,6 +10,7 @@ use App\Models\Account;
 use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
 use App\Models\DepartmentTeacher;
+use App\Models\Teacher;
 
 class Department extends Model
 {
@@ -64,6 +65,11 @@ class Department extends Model
     public function department_teachers()
     {
         return $this->hasMany(DepartmentTeacher::class);
+    }
+
+    public function teachers()
+    {
+        return $this->morphToMany(Teacher::class, 'teacherable');
     }
 
     public function hasAccount(int $account_id): bool

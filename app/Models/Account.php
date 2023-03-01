@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\DTO\ExternalAccount;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
+use App\Models\Teacher;
 
 class Account extends Model
 {
@@ -17,17 +18,25 @@ class Account extends Model
 
     public const EXTERNAL_ACCOUNT_ID_HEADER_KEY = 'X-Account-Id';
 
+    public const TYPES = [
+        'UNIVERSITY' => 0,
+        'COLLEGE' => 1,
+        'SCHOOL' => 2
+    ];
+
     protected $fillable = [
         'external_id', 
         'name',
         'email',
         'role',
+        'type'
     ];
 
     protected $hidden = [
         'id',
         'external_id',
         'deleted_at',
+        'type'
     ];
 
     protected $casts = [
@@ -43,7 +52,8 @@ class Account extends Model
             'external_id' =>  $this->external_id,
             'email' => $this->email,
             'name' => $this->name,
-            'role' => $this->role
+            'role' => $this->role,
+            'type' => $this->type
         ];
     }
 
@@ -53,6 +63,19 @@ class Account extends Model
 
     public function faculties() {
         return $this->hasMany(Faculty::class);
+    }
+
+    public function teachers()
+    {
+        return $this->hasMany(Teacher::class);
+    }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->id == $account_id) {
+            return true;
+        }
+        return false;
     }
 
     public static function saveOrCreate(ExternalAccount $externalAccount)

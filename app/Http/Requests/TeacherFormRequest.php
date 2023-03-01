@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DepartmentGroupFormRequest extends FormRequest
+class TeacherFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,10 @@ class DepartmentGroupFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'sub_group' => ['sometimes', 'integer'],
-            'degree' => ['sometimes', 'integer'],
-            'year_of_education' => ['sometimes', 'integer'],
-            'form_of_education' => ['sometimes', 'integer'],
-            'department_id' => ['required', 'integer', 'exists:App\Models\Department,id'],
+            'full_name' => ['required', 'string', 'max:255'],
+            'position' => ['sometimes', 'string', 'max:255'],
+            'degree' => ['sometimes', 'string', 'max:255'],
+            'parent_id' => ['sometimes', 'integer']
         ];
     }
 }

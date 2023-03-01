@@ -11,13 +11,15 @@ class AccountRepository implements AccountService
     public string $name;
     public string $email;
     public string $role;
+    public string $type;
 
     public function __construct(
         $id = 0,
         $external_id = 0, 
         $name = '',
         $email = '', 
-        $role = ''
+        $role = '',
+        $type = 0
     )
     {
         $this->id = $id;
@@ -25,6 +27,7 @@ class AccountRepository implements AccountService
         $this->name = $name;
         $this->email = $email;
         $this->role = $role;
+        $this->type = $type;
     }
 
     public function serialize(): array
@@ -34,7 +37,8 @@ class AccountRepository implements AccountService
             'external_id' => $this->external_id,
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $this->role
+            'role' => $this->role,
+            'type' => $this->type
         ];
     }
 
@@ -45,6 +49,7 @@ class AccountRepository implements AccountService
         $this->name = $data['name'];
         $this->email = $data['email'];
         $this->role = $data['role'];
+        $this->type = $data['type'];
     }
 
     public function getData(): self
@@ -55,5 +60,10 @@ class AccountRepository implements AccountService
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getType(): int
+    {
+        return $this->type;
     }
 }

@@ -53,4 +53,12 @@ class ScheduleSetting extends Model
     {
         $this->schedule_setting_items()->delete();
     }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->account_id == $account_id) {
+            return true;
+        }
+        return false;
+    }
 }

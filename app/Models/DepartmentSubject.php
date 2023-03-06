@@ -39,4 +39,12 @@ class DepartmentSubject extends Model
     {
         return $this->department->account();
     }
+
+    public function hasAccount(int $account_id): bool
+    {
+        if ($this->account->id == $account_id) {
+            return true;
+        }
+        return false;
+    }
 }

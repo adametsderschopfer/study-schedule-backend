@@ -79,7 +79,7 @@ class RouteServiceProvider extends ServiceProvider
             [
                 'key' => 'schedule',
                 'model' => Schedule::class,
-                'isThrough' => true
+                'isThrough' => false
             ]
         ]);
     }

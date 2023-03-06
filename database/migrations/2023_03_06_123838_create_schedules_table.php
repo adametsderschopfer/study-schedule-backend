@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id');
             $table->foreignId('department_id')->nullable();
             $table->foreignId('schedule_setting_id')->nullable();
             $table->foreignId('department_subject_id')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->dateTime('repeat_end')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->foreign('schedule_setting_id')->references('id')->on('schedule_settings')->onDelete('cascade');
             $table->foreign('department_subject_id')->references('id')->on('department_subjects')->onDelete('cascade');
@@ -43,6 +45,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('schedules', function (Blueprint $table) {
+            $table->dropForeign('schedules_account_id_foreign');
             $table->dropForeign('schedules_department_id_foreign');
             $table->dropForeign('schedules_schedule_setting_id_foreign');
             $table->dropForeign('schedules_department_subject_id_foreign');

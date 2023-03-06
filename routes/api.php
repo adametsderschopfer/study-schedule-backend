@@ -14,6 +14,13 @@ use App\Http\Controllers\API\v1\Admin\ScheduleController;
 Route::prefix('v1')->group(function()
 {
     Route::middleware('hasAccount')
+        ->prefix('client')
+        ->group(function()
+    {
+        Route::get('schedules', [ScheduleController::class, 'getByDay']);
+    });
+
+    Route::middleware('hasAccount')
         ->prefix('admin')
         ->group(function()
     {

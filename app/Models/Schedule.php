@@ -24,6 +24,7 @@ class Schedule extends Model
     ];
 
     protected $fillable = [
+        'account_id', 
         'department_id', 
         'schedule_setting_id', 
         'department_subject_id', 
@@ -38,6 +39,7 @@ class Schedule extends Model
     ];
 
     protected $hidden = [
+        'account_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -47,7 +49,14 @@ class Schedule extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'repeat_start' => 'datetime:Y-m-d',
+        'repeat_end' => 'datetime:Y-m-d',
     ];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 
     public function department()
     {
@@ -76,8 +85,18 @@ class Schedule extends Model
         return $this->belongsTo(Teacher::class);
     }
 
-    public function account()
+    public static function checkRelations(array $input, $account_id): bool
     {
-        return $this->department->account();
+        $department = Department::findOrFail($input['department_id']);
+        $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
+        $departmentSubject = DepartmentSubject::findOrFail($input['department_subject_id']);
+        $teacher = Teacher::findOrFail($input['teacher_id']);
+
+        return (
+            $department->hasAccount($account_id) &&
+            $scheduleSetting->hasAccount($account_id) &&
+            $departmentSubject->hasAccount($account_id) &&
+            $teacher->hasAccount($account_id)
+        );
     }
 }

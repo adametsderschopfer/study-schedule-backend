@@ -38,29 +38,34 @@ class ScheduleController extends Controller
      */
     protected function index()
     {
-        return Schedule::all();
+        return Schedule::where('account_id', $this->accountService->getId())
+                ->get();
     }
 
     protected function store(ScheduleFormRequest $request)
     {
         $input = $request->validated();
 
-        $department = Department::findOrFail($input['department_id']);
-        $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
-        $departmentSubject = DepartmentSubject::findOrFail($input['department_subject_id']);
-        $teacher = Teacher::findOrFail($input['teacher_id']);
-
-        if (
-            !$department->hasAccount($this->accountService->getId()) ||
-            !$scheduleSetting->hasAccount($this->accountService->getId()) ||
-            !$departmentSubject->hasAccount($this->accountService->getId()) ||
-            !$teacher->hasAccount($this->accountService->getId())
-        ) {
+        if (!Schedule::checkRelations($input, $this->accountService->getId())) {
             abort(404);
         }
+
+        $input['account_id'] = $this->accountService->getId();
 
         $schedule = Schedule::create($input);
 
         return $schedule;
+    }
+
+    public function getByDay()
+    {
+        $date = date('Y-m-d');
+        
+        $schedules = Schedule::where('account_id', $this->accountService->getId())
+                ->where('repeat_start', '<=', $date)
+                ->where('repeat_end', '>=', $date)
+                ->get();
+
+        return $schedules;
     }
 }

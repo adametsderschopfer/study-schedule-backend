@@ -28,6 +28,7 @@ class Schedule extends Model
         'department_id', 
         'schedule_setting_id', 
         'department_subject_id', 
+        'department_group_id',
         'teacher_id', 
         'shedule_setting_item_order',
         'day_of_week',
@@ -51,6 +52,16 @@ class Schedule extends Model
         'deleted_at' => 'datetime',
         'repeat_start' => 'datetime:Y-m-d',
         'repeat_end' => 'datetime:Y-m-d',
+        'department_id' => 'integer',
+        'schedule_setting_id' => 'integer',
+        'department_subject_id' => 'integer',
+        'department_group_id' => 'integer',
+        'teacher_id' => 'integer',
+        'shedule_setting_item_order' => 'integer',
+        'day_of_week' => 'integer',
+        'repeatability' => 'integer',
+        'type' => 'integer',
+        'sub_group' => 'integer'
     ];
 
     public function account()
@@ -70,7 +81,7 @@ class Schedule extends Model
 
     public function schedule_setting_item()
     {
-        return ScheduleSettingItem::where('schedule_setting_id', $this->schedule_setting->id)
+        return ScheduleSettingItem::where('schedule_setting_id', $this->schedule_setting_id)
                     ->where('order', $this->shedule_setting_item_order)
                     ->get() ?? null;
     }
@@ -90,12 +101,14 @@ class Schedule extends Model
         $department = Department::findOrFail($input['department_id']);
         $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
         $departmentSubject = DepartmentSubject::findOrFail($input['department_subject_id']);
+        $departmentGroup = DepartmentGroup::findOrFail($input['department_group_id']);
         $teacher = Teacher::findOrFail($input['teacher_id']);
 
         return (
             $department->hasAccount($account_id) &&
             $scheduleSetting->hasAccount($account_id) &&
             $departmentSubject->hasAccount($account_id) &&
+            $departmentGroup->hasAccount($account_id) &&
             $teacher->hasAccount($account_id)
         );
     }

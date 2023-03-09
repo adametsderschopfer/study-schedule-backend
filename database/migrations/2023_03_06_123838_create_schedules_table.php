@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('department_id')->nullable();
             $table->foreignId('schedule_setting_id')->nullable();
             $table->foreignId('department_subject_id')->nullable();
+            $table->foreignId('department_group_id')->nullable();
             $table->foreignId('teacher_id')->nullable();
             $table->smallInteger('shedule_setting_item_order')->default(0);
             $table->smallInteger('day_of_week')->default(0);
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->foreign('schedule_setting_id')->references('id')->on('schedule_settings')->onDelete('cascade');
             $table->foreign('department_subject_id')->references('id')->on('department_subjects')->onDelete('cascade');
+            $table->foreign('department_group_id')->references('id')->on('department_groups')->onDelete('cascade');
             $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
         });
     }
@@ -49,6 +51,7 @@ return new class extends Migration
             $table->dropForeign('schedules_department_id_foreign');
             $table->dropForeign('schedules_schedule_setting_id_foreign');
             $table->dropForeign('schedules_department_subject_id_foreign');
+            $table->dropForeign('schedules_department_group_id_foreign');
             $table->dropForeign('schedules_teacher_id_foreign');
         });
         Schema::dropIfExists('schedules');

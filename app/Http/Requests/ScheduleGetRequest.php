@@ -31,18 +31,4 @@ class ScheduleGetRequest extends FormRequest
             'week' => ['required_without:date', 'string', 'in:current,next']
         ];
     }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'repeat_end.after_or_equal' => __('DateEnd after DateStart'),
-            'repeat_start.date_format' => __('Date not format'),
-            'repeat_end.date_format' => __('Date not format'),
-        ];
-    }
 }

@@ -76,8 +76,8 @@ class ScheduleAction
             $week_start = date('Y-m-d', strtotime('Next monday'));
             $week_end = date('Y-m-d', strtotime('Next monday +7 days'));
         } else {
-            $week_start = date('Y-m-d', strtotime('Last monday'));
-            $week_end = date('Y-m-d', strtotime('Last monday +7 days'));
+            $week_start = date('Y-m-d', strtotime('Monday this week'));
+            $week_end = date('Y-m-d', strtotime('Monday this week +7 days'));
         }
 
         $period = new DatePeriod(

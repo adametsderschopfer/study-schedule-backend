@@ -10,9 +10,19 @@ use App\Http\Controllers\API\v1\Admin\DepartmentSubjectController;
 use App\Http\Controllers\API\v1\Admin\DepartmentGroupController;
 use App\Http\Controllers\API\v1\Admin\TeacherController;
 use App\Http\Controllers\API\v1\Admin\ScheduleController;
+use App\Http\Controllers\API\v1\Client\FacultyClientController;
+use App\Http\Controllers\API\v1\Client\ScheduleClientController;
 
 Route::prefix('v1')->group(function()
 {
+    Route::middleware('hasAccount')
+        ->prefix('client')
+        ->group(function()
+    {
+        Route::get('faculties', [FacultyClientController::class, 'index']);
+        Route::get('schedules', [ScheduleClientController::class, 'index']);
+    });
+
     Route::middleware('hasAccount')
         ->prefix('admin')
         ->group(function()

@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Department;
 use App\Models\ScheduleSetting;
 use App\Models\ScheduleSettingItem;
-use App\Models\DepartmentSubject;
 use App\Models\Teacher;
+use App\Models\Subject;
 
 class Schedule extends Model
 {
@@ -27,7 +27,6 @@ class Schedule extends Model
         'account_id', 
         'department_id', 
         'schedule_setting_id', 
-        'department_subject_id', 
         'department_group_id',
         'teacher_id', 
         'shedule_setting_item_order',
@@ -54,7 +53,6 @@ class Schedule extends Model
         'repeat_end' => 'datetime:Y-m-d',
         'department_id' => 'integer',
         'schedule_setting_id' => 'integer',
-        'department_subject_id' => 'integer',
         'department_group_id' => 'integer',
         'teacher_id' => 'integer',
         'shedule_setting_item_order' => 'integer',
@@ -91,28 +89,28 @@ class Schedule extends Model
                     ->get() ?? null;
     }
 
-    public function department_subject()
-    {
-        return $this->belongsTo(DepartmentSubject::class);
-    }
-
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 
     public static function checkRelations(array $input, $account_id): bool
     {
         $department = Department::findOrFail($input['department_id']);
         $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
-        $departmentSubject = DepartmentSubject::findOrFail($input['department_subject_id']);
+        $subject = Subject::findOrFail($input['subject_id']);
         $departmentGroup = DepartmentGroup::findOrFail($input['department_group_id']);
         $teacher = Teacher::findOrFail($input['teacher_id']);
 
         return (
             $department->hasAccount($account_id) &&
             $scheduleSetting->hasAccount($account_id) &&
-            $departmentSubject->hasAccount($account_id) &&
+            $subject->hasAccount($account_id) &&
             $departmentGroup->hasAccount($account_id) &&
             $teacher->hasAccount($account_id)
         );

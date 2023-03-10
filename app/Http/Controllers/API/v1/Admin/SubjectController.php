@@ -8,40 +8,40 @@ use App\Services\AccountService;
 use App\Models\Account;
 use App\Models\Faculty;
 use App\Models\Department;
-use App\Models\Teacher;
-use App\Http\Requests\TeacherFormRequest;
+use App\Models\Subject;
+use App\Http\Requests\SubjectFormRequest;
 
-class TeacherController extends Controller
+class SubjectController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
 
         switch ($this->accountService->getType()) {
             case Account::TYPES['UNIVERSITY'] :
-                $this->teacherable = Department::class;
+                $this->subjectable = Department::class;
                 break;
             case Account::TYPES['COLLEGE'] :
-                $this->teacherable = Faculty::class;
+                $this->subjectable = Faculty::class;
                 break;
             case Account::TYPES['SCHOOL'] :
-                $this->teacherable = Account::class;
+                $this->subjectable = Account::class;
                 break;
             default:
-            $this->teacherable = false;
+            $this->subjectable = false;
         }
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/teachers?parent_id={parentId}",
-     *   tags={"Teachers"},
-     *   summary="Получение списка преподавателей",
-     *   operationId="get_teachers",
+     * path="/api/v1/admin/subjects?parent_id={parentId}",
+     *   tags={"Subjects"},
+     *   summary="Получение списка предметов",
+     *   operationId="get_subjects",
      * 
      *   @OA\Parameter(
      *      name="parentId",
      *      in="path",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="integer"
      *      )
@@ -63,27 +63,27 @@ class TeacherController extends Controller
         $input = $request->only('parent_id');
 
         if (!isset($input['parent_id'])) {
-            abort(404);
+            $input['parent_id'] = $this->accountService->getId();
         }
 
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
+        $parent = $this->subjectable::findOrFail($input['parent_id']);
 
         if (!$parent->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        return $parent->teachers;
+        return $parent->subjects;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/teachers/{teacherId}",
-     *   tags={"Teachers"},
-     *   summary="Получение одного преподавателя",
-     *   operationId="show_teacher",
+     * path="/api/v1/admin/subjects/{subjectId}",
+     *   tags={"Subjects"},
+     *   summary="Получение одного предмета",
+     *   operationId="show_subject",
      *
      *   @OA\Parameter(
-     *      name="teacherId",
+     *      name="subjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -102,20 +102,20 @@ class TeacherController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(Teacher $teacher)
+    protected function show(Subject $subject)
     {
-        return $teacher;
+        return $subject;
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/teachers/{teacherId}",
-     *   tags={"Teachers"},
-     *   summary="Удаление преподавателя",
-     *   operationId="delete_teacher",
+     * path="/api/v1/admin/subjects/{subjectId}",
+     *   tags={"subjects"},
+     *   summary="Удаление предмета",
+     *   operationId="delete_subject",
      *
      *   @OA\Parameter(
-     *      name="teacherId",
+     *      name="subjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -133,51 +133,33 @@ class TeacherController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(Teacher $teacher)
+    protected function destroy(Subject $subject)
     {
-        $teacher->delete();
+        $subject->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/teachers",
-     *      tags={"Teachers"},
-     *      summary="Создание преподавателя",
-     *      operationId="add_teacher",
+     *      path="/api/v1/admin/subjects",
+     *      tags={"subjects"},
+     *      summary="Создание предмета",
+     *      operationId="add_subject",
      * 
      *      @OA\Parameter(
      *          name="parent_id",
      *          in="query",
-     *          required=true,
+     *          required=false,
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="full_name",
+     *          name="name",
      *          in="query",
      *          required=true,
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *      ),
-     * 
-     *      @OA\Parameter(
-     *          name="position",
-     *          in="query",
-     *          required=false,
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *      ),
-     * 
-     *      @OA\Parameter(
-     *          name="degree",
-     *          in="query",
-     *          required=false,
      *          @OA\Schema(
      *              type="string"
      *          )
@@ -194,37 +176,37 @@ class TeacherController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(TeacherFormRequest $request)
+    protected function store(SubjectFormRequest $request)
     {
         $input = $request->validated();
 
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
-        $input['account_id'] = $this->accountService->getId();
+        if (!isset($input['parent_id'])) {
+            $input['parent_id'] = $this->accountService->getId();
+        }
 
-        if (!$parent->hasAccount($input['account_id'])) {
+        $parent = $this->subjectable::findOrFail($input['parent_id']);
+
+        if (!$parent->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        $teacher = new Teacher;
-        $teacher->account_id = $input['account_id'];
-        $teacher->full_name = $input['full_name'];
-        $teacher->position = $input['position'];
-        $teacher->degree = $input['degree'];
+        $subject = new Subject;
+        $subject->name = $input['name'];
 
-        $parent->teachers()->save($teacher);
+        $parent->subjects()->save($subject);
 
-        return $teacher;
+        return $subject;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/teachers/{teacherId}",
-     *      tags={"Teachers"},
-     *      summary="Обновление преподавателя",
-     *      operationId="edit_teacher",
+     *      path="/api/v1/admin/subjects/{subjectId}",
+     *      tags={"Subjects"},
+     *      summary="Обновление предмета",
+     *      operationId="edit_subject",
      * 
      *      @OA\Parameter(
-     *          name="teacherId",
+     *          name="subjectId",
      *          in="path",
      *          required=true,
      *          @OA\Schema(
@@ -235,34 +217,16 @@ class TeacherController extends Controller
      *      @OA\Parameter(
      *          name="parent_id",
      *          in="query",
-     *          required=true,
+     *          required=false,
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="full_name",
+     *          name="name",
      *          in="query",
      *          required=true,
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *      ),
-     * 
-     *      @OA\Parameter(
-     *          name="position",
-     *          in="query",
-     *          required=false,
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *      ),
-     * 
-     *      @OA\Parameter(
-     *          name="degree",
-     *          in="query",
-     *          required=false,
      *          @OA\Schema(
      *              type="string"
      *          )
@@ -279,26 +243,28 @@ class TeacherController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(Teacher $teacher, TeacherFormRequest $request)
+    protected function update(Subject $subject, SubjectFormRequest $request)
     {
         $input = $request->validated();
 
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
+        if (!isset($input['parent_id'])) {
+            $input['parent_id'] = $this->accountService->getId();
+        }
+
+        $parent = $this->subjectable::findOrFail($input['parent_id']);
 
         if (!$parent->hasAccount($this->accountService->getId())) {
             abort(404);
         }
 
-        $teacher->account_id = $this->accountService->getId();
-        $teacher->full_name = $input['full_name'];
-        $teacher->position = $input['position'];
-        $teacher->degree = $input['degree'];
+        $subject->name = $input['name'];
 
-        $teacher->faculties()->detach();
-        $teacher->departments()->detach();
+        $subject->account()->detach();
+        $subject->faculties()->detach();
+        $subject->departments()->detach();
 
-        if ($parent->teachers()->save($teacher)) {
-            return $teacher;
+        if ($parent->subjects()->save($subject)) {
+            return $subject;
         }
 
         return $this->sendError(__('Server error'));

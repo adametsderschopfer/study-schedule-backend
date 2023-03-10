@@ -70,6 +70,11 @@ class Account extends Model
         return $this->hasMany(Teacher::class);
     }
 
+    public function subjects()
+    {
+        return $this->morphToMany(Subject::class, 'subjectable');
+    }
+
     public function hasAccount(int $account_id): bool
     {
         if ($this->id == $account_id) {

@@ -10,6 +10,7 @@ use App\Http\Controllers\API\v1\Admin\DepartmentSubjectController;
 use App\Http\Controllers\API\v1\Admin\DepartmentGroupController;
 use App\Http\Controllers\API\v1\Admin\TeacherController;
 use App\Http\Controllers\API\v1\Admin\ScheduleController;
+use App\Http\Controllers\API\v1\Admin\SubjectController;
 use App\Http\Controllers\API\v1\Client\FacultyClientController;
 use App\Http\Controllers\API\v1\Client\ScheduleClientController;
 use App\Http\Controllers\API\v1\Client\TeacherClientController;
@@ -37,5 +38,6 @@ Route::prefix('v1')->group(function()
         Route::resource('department_groups', DepartmentGroupController::class);
         Route::resource('teachers', TeacherController::class);
         Route::resource('schedules', ScheduleController::class);
+        Route::resource('subjects', SubjectController::class);
     });
 });

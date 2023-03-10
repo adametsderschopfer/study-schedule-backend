@@ -12,15 +12,17 @@ use App\Http\Controllers\API\v1\Admin\TeacherController;
 use App\Http\Controllers\API\v1\Admin\ScheduleController;
 use App\Http\Controllers\API\v1\Client\FacultyClientController;
 use App\Http\Controllers\API\v1\Client\ScheduleClientController;
+use App\Http\Controllers\API\v1\Client\TeacherClientController;
 
 Route::prefix('v1')->group(function()
 {
-    Route::middleware('hasAccount')
+    Route::middleware('clientHasAccount')
         ->prefix('client')
         ->group(function()
     {
         Route::get('faculties', [FacultyClientController::class, 'index']);
         Route::get('schedules', [ScheduleClientController::class, 'index']);
+        Route::get('teachers', [TeacherClientController::class, 'index']);
     });
 
     Route::middleware('hasAccount')

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
 use App\Models\Faculty;
+use App\Models\Account;
 
 class FacultyClientController extends Controller
 {
@@ -33,12 +34,13 @@ class FacultyClientController extends Controller
      */
     protected function index()
     {
-        return Faculty::where('account_id', $this->accountService->getId())
+        $faculties = Faculty::where('account_id', $this->accountService->getId())
             ->with(['departments' => function($q)
                 {
                     $q->with('department_groups');
                 }
-            ])
-            ->get();
+            ]);
+            
+        return $faculties->get();
     }
 }

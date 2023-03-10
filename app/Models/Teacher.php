@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Account;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\DepartmentGroup;
+use App\Models\Schedule;
 
 class Teacher extends Model
 {
@@ -48,6 +50,23 @@ class Teacher extends Model
     public function departments()
     {
         return $this->morphedByMany(Department::class, 'teacherable');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function getDepartmentGroups(): array
+    {
+        $department_groups = array();
+        $schedules = $this->schedules;
+
+        foreach ($schedules as $schedule) {
+            $department_groups[] = $schedule->department_group;
+        }
+        
+        return $department_groups;
     }
 
     public function hasAccount(int $account_id): bool

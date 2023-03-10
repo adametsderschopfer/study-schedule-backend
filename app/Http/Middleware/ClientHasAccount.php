@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Http\Requests\ExternalAuthRequest;
 
-class HasAccount
+class ClientHasAccount
 {
     public function __construct(ExternalAuthRequest $externalAuthRequest) {
         $this->externalAuthRequest = $externalAuthRequest;
@@ -20,7 +20,7 @@ class HasAccount
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$this->externalAuthRequest->sendWithCreate()) {
+        if (!$this->externalAuthRequest->sendWithCheck()) {
             abort(401);
         }
 

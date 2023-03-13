@@ -72,7 +72,7 @@ class Account extends Model
 
     public function subjects()
     {
-        return $this->morphToMany(Subject::class, 'subjectable');
+        return $this->hasMany(Subject::class);
     }
 
     public function hasAccount(int $account_id): bool

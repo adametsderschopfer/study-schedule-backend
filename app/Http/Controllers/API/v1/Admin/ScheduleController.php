@@ -32,7 +32,7 @@ class ScheduleController extends Controller
      *      in="path",
      *      required=false, 
      *      description="Required if not set date parameter. Values: [ current | next ].",
-     *      default="current, 
+     *      default="current", 
      *      @OA\Schema(
      *           type="string"
      *      )

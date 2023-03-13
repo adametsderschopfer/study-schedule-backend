@@ -52,11 +52,6 @@ class Department extends Model
         );
     }
 
-    public function department_subjects()
-    {
-        return $this->hasMany(DepartmentSubject::class);
-    }
-
     public function department_groups()
     {
         return $this->hasMany(DepartmentGroup::class);

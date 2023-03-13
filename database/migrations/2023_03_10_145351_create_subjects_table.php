@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id');
             $table->string('name')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
         });
 
         Schema::create('subjectables', function (Blueprint $table)  {
@@ -34,6 +36,9 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->dropForeign('subjects_account_id_foreign');
+        });
         Schema::dropIfExists('subjectables');
         Schema::dropIfExists('subjects');
     }

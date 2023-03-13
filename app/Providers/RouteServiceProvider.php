@@ -85,7 +85,7 @@ class RouteServiceProvider extends ServiceProvider
             [
                 'key' => 'subject',
                 'model' => Subject::class,
-                'isThrough' => true
+                'isThrough' => false
             ]
         ]);
     }

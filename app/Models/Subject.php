@@ -12,10 +12,12 @@ class Subject extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'account_id', 
         'name'
     ];
 
     protected $hidden = [
+        'account_id', 
         'created_at',
         'updated_at',
         'deleted_at',
@@ -31,6 +33,11 @@ class Subject extends Model
     public function subjectable()
     {
         return $this->morphTo();
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function faculties()

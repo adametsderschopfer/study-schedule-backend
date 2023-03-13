@@ -23,11 +23,8 @@ class SubjectController extends Controller
             case Account::TYPES['COLLEGE'] :
                 $this->subjectable = Faculty::class;
                 break;
-            case Account::TYPES['SCHOOL'] :
-                $this->subjectable = Account::class;
-                break;
             default:
-            $this->subjectable = false;
+                $this->subjectable = false;
         }
     }
 
@@ -41,7 +38,7 @@ class SubjectController extends Controller
      *   @OA\Parameter(
      *      name="parentId",
      *      in="path",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
      *           type="integer"
      *      )
@@ -62,14 +59,13 @@ class SubjectController extends Controller
     {
         $input = $request->only('parent_id');
 
-        if (!isset($input['parent_id'])) {
-            $input['parent_id'] = $this->accountService->getId();
-        }
-
-        $parent = $this->subjectable::findOrFail($input['parent_id']);
-
-        if (!$parent->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
         return $parent->subjects;
@@ -150,7 +146,7 @@ class SubjectController extends Controller
      *      @OA\Parameter(
      *          name="parent_id",
      *          in="query",
-     *          required=false,
+     *          required=true,
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -180,18 +176,18 @@ class SubjectController extends Controller
     {
         $input = $request->validated();
 
-        if (!isset($input['parent_id'])) {
-            $input['parent_id'] = $this->accountService->getId();
-        }
-
-        $parent = $this->subjectable::findOrFail($input['parent_id']);
-
-        if (!$parent->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
         $subject = new Subject;
         $subject->name = $input['name'];
+        $subject->account_id = $this->accountService->getId();
 
         $parent->subjects()->save($subject);
 
@@ -217,7 +213,7 @@ class SubjectController extends Controller
      *      @OA\Parameter(
      *          name="parent_id",
      *          in="query",
-     *          required=false,
+     *          required=true,
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -247,19 +243,17 @@ class SubjectController extends Controller
     {
         $input = $request->validated();
 
-        if (!isset($input['parent_id'])) {
-            $input['parent_id'] = $this->accountService->getId();
-        }
-
-        $parent = $this->subjectable::findOrFail($input['parent_id']);
-
-        if (!$parent->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
         $subject->name = $input['name'];
 
-        $subject->account()->detach();
         $subject->faculties()->detach();
         $subject->departments()->detach();
 

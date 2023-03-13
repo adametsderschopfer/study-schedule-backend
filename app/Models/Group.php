@@ -5,26 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Department;
-use App\Models\Teacher;
-use App\Models\Subject;
-use App\Models\Group;
 
-class Faculty extends Model
+class Group extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $fillable = [
         'account_id', 
+        'sub_group',
+        'degree',
+        'year_of_education',
+        'form_of_education',
         'name'
     ];
 
     protected $hidden = [
+        'account_id', 
         'created_at',
         'updated_at',
-        'account_id',
         'deleted_at',
+        'pivot'
     ];
 
     protected $casts = [
@@ -33,24 +34,29 @@ class Faculty extends Model
         'deleted_at' => 'datetime',
     ];
 
+    public function groupable()
+    {
+        return $this->morphTo();
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    public function faculties()
+    {
+        return $this->morphedByMany(Faculty::class, 'groupable');
+    }
+
     public function departments()
     {
-        return $this->hasMany(Department::class);
+        return $this->morphedByMany(Department::class, 'groupable');
     }
 
-    public function teachers()
+    public function schedules()
     {
-        return $this->morphToMany(Teacher::class, 'teacherable');
-    }
-
-    public function subjects()
-    {
-        return $this->morphToMany(Subject::class, 'subjectable');
-    }
-
-    public function groups()
-    {
-        return $this->morphToMany(Group::class, 'groupable');
+        return $this->hasMany(Schedule::class);
     }
 
     public function hasAccount(int $account_id): bool

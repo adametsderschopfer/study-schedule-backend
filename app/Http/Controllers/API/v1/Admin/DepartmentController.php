@@ -236,7 +236,7 @@ class DepartmentController extends Controller
 
         if ($department->update($input)) {
             return $department->load('subjects')
-                    ->load('department_groups')
+                    ->load('groups')
                     ->load('teachers');
         }
 

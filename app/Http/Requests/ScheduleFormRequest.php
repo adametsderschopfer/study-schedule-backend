@@ -27,7 +27,7 @@ class ScheduleFormRequest extends FormRequest
             'department_id' => ['sometimes', 'integer', 'exists:App\Models\Department,id'],
             'schedule_setting_id' => ['sometimes', 'integer', 'exists:App\Models\ScheduleSetting,id'],
             'subject_id' => ['sometimes', 'integer', 'exists:App\Models\Subject,id'],
-            'department_group_id' => ['required', 'integer', 'exists:App\Models\DepartmentGroup,id'],
+            'group_id' => ['required', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['required', 'integer', 'exists:App\Models\Teacher,id'],
             'shedule_setting_item_order' => ['required', 'integer', 'max:99'],
             'day_of_week' => ['required', 'integer', 'max:6'],

@@ -43,6 +43,7 @@ class ScheduleAction
                 ->with('department')
                 ->with('schedule_setting')
                 ->with('subject')
+                ->with('group')
                 ->with('teacher');
 
         $week = date('W', $selectDate);

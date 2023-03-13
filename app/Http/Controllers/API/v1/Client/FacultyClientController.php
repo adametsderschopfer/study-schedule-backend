@@ -37,9 +37,10 @@ class FacultyClientController extends Controller
         $faculties = Faculty::where('account_id', $this->accountService->getId())
             ->with(['departments' => function($q)
                 {
-                    $q->with('department_groups');
+                    $q->with('groups');
                 }
-            ]);
+            ])
+            ->with('groups');
             
         return $faculties->get();
     }

@@ -33,6 +33,7 @@ class Schedule extends Model
         'day_of_week',
         'repeatability',
         'type',
+        'group_id', 
         'sub_group',
         'repeat_start',
         'repeat_end'
@@ -58,6 +59,7 @@ class Schedule extends Model
         'day_of_week' => 'integer',
         'repeatability' => 'integer',
         'type' => 'integer',
+        'group_id' => 'integer',
         'sub_group' => 'integer'
     ];
 
@@ -69,11 +71,6 @@ class Schedule extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
-    }
-
-    public function group()
-    {
-        return $this->belongsTo(Group::class);
     }
 
     public function schedule_setting()
@@ -96,6 +93,11 @@ class Schedule extends Model
     public function subject()
     {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 
     public static function checkRelations(array $input, $account_id): bool

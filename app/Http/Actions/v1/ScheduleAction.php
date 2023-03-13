@@ -52,8 +52,8 @@ class ScheduleAction
             $schedules->where('repeatability', '!=', Schedule::REPEATABILITIES['EVEN']);
         }
 
-        if (isset($input['department_group_id'])) {
-            $schedules->where('department_group_id', $input['department_group_id']);
+        if (isset($input['group_id'])) {
+            $schedules->where('group_id', $input['group_id']);
         }
 
         if (isset($input['teacher_id'])) {

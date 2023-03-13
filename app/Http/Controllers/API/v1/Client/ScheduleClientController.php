@@ -22,7 +22,7 @@ class ScheduleClientController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/schedules?week={week}&date={date}&teacher_id={teacherId}&department_group_id={departmentGroupId}",
+     * path="/api/v1/client/schedules?week={week}&date={date}&teacher_id={teacherId}&group_id={groupId}",
      *   tags={"Schedules Client"},
      *   summary="Получение списка расписаний",
      *   operationId="get_client_schedules",
@@ -58,7 +58,7 @@ class ScheduleClientController extends Controller
      *   ),
      * 
      *   @OA\Parameter(
-     *      name="departmentGroupId",
+     *      name="groupId",
      *      in="path",
      *      required=false, 
      *      @OA\Schema(

@@ -46,23 +46,25 @@ class AppServiceProvider extends ServiceProvider
         Faculty::deleted(function ($faculty) {
             $faculty->departments()->delete();
             $faculty->teachers()->delete();
+            $faculty->subjects()->delete();
         });
 
         Faculty::restored(function ($faculty) {
             $faculty->departments()->withTrashed()->restore();
             $faculty->teachers()->withTrashed()->restore();
+            $faculty->subject()->withTrashed()->restore();
         });
 
         Department::deleted(function ($department) {
-            $department->department_subjects()->delete();
             $department->department_groups()->delete();
             $department->teachers()->delete();
+            $department->subjects()->delete();
         });
 
         Department::restored(function ($department) {
-            $department->department_subjects()->withTrashed()->restore();
             $department->department_groups()->withTrashed()->restore();
             $department->teachers()->withTrashed()->restore();
+            $department->subjects()->withTrashed()->restore();
         });
     }
 }

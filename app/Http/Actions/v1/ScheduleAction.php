@@ -42,7 +42,7 @@ class ScheduleAction
                 ->orderBy('shedule_setting_item_order', 'asc')
                 ->with('department')
                 ->with('schedule_setting')
-                ->with('department_subject')
+                ->with('subject')
                 ->with('teacher');
 
         $week = date('W', $selectDate);

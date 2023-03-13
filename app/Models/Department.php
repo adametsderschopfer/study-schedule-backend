@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
-use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
 use App\Models\Teacher;
 use App\Models\Subject;

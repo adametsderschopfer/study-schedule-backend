@@ -70,6 +70,11 @@ class Account extends Model
         return $this->hasMany(Teacher::class);
     }
 
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
+
     public function hasAccount(int $account_id): bool
     {
         if ($this->id == $account_id) {

@@ -32,7 +32,7 @@ class ScheduleController extends Controller
      *      in="path",
      *      required=false, 
      *      description="Required if not set date parameter. Values: [ current | next ].",
-     *      default="current, 
+     *      default="current", 
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -115,7 +115,7 @@ class ScheduleController extends Controller
     {
         $schedule = $schedule->load('department')
             ->load('schedule_setting')
-            ->load('department_subject')
+            ->load('subject')
             ->load('teacher');
 
         $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
@@ -182,7 +182,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="department_subject_id",
+     *          name="subject_id",
      *          in="query",
      *          required=false,
      *          @OA\Schema(
@@ -308,7 +308,7 @@ class ScheduleController extends Controller
 
         return $schedule->load('department')
             ->load('schedule_setting')
-            ->load('department_subject')
+            ->load('subject')
             ->load('teacher');
     }
 
@@ -347,7 +347,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="department_subject_id",
+     *          name="subject_id",
      *          in="query",
      *          required=false,
      *          @OA\Schema(
@@ -464,7 +464,7 @@ class ScheduleController extends Controller
         if ($schedule->update($input)) {
             return $schedule->load('department')
                 ->load('schedule_setting')
-                ->load('department_subject')
+                ->load('subject')
                 ->load('teacher');
         }
 

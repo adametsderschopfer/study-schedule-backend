@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Department;
-use App\Models\DepartmentSubject;
+use App\Models\Subject;
 
-class DepartmentSubjectSeeder extends Seeder
+class SubjectSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,8 +18,8 @@ class DepartmentSubjectSeeder extends Seeder
     {
         $department_id = Department::first()->id;
 
-        DepartmentSubject::factory()->count(3)->create([
-            'department_id' => $department_id,
+        Subject::factory()->count(3)->create([
+            'parent_id' => $department_id,
         ]);
     }
 }

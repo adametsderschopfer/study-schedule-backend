@@ -5,25 +5,38 @@ namespace App\Http\Controllers\API\v1\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
-use App\Models\DepartmentSubject;
+use App\Models\Account;
+use App\Models\Faculty;
 use App\Models\Department;
-use App\Http\Requests\DepartmentSubjectFormRequest;
+use App\Models\Subject;
+use App\Http\Requests\SubjectFormRequest;
 
-class DepartmentSubjectController extends Controller
+class SubjectController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
+
+        switch ($this->accountService->getType()) {
+            case Account::TYPES['UNIVERSITY'] :
+                $this->subjectable = Department::class;
+                break;
+            case Account::TYPES['COLLEGE'] :
+                $this->subjectable = Faculty::class;
+                break;
+            default:
+                $this->subjectable = false;
+        }
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/department_subjects?department_id={departmentId}",
-     *   tags={"Department Subjects"},
+     * path="/api/v1/admin/subjects?parent_id={parentId}",
+     *   tags={"Subjects"},
      *   summary="Получение списка предметов",
-     *   operationId="get_department_subjects",
+     *   operationId="get_subjects",
      * 
      *   @OA\Parameter(
-     *      name="departmentId",
+     *      name="parentId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -44,26 +57,29 @@ class DepartmentSubjectController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('department_id');
+        $input = $request->only('parent_id');
 
-        $department = Department::findOrFail($input['department_id']);
-
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        return $department->department_subjects;
+        return $parent->subjects;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/department_subjects/{departmentSubjectId}",
-     *   tags={"Department Subjects"},
+     * path="/api/v1/admin/subjects/{subjectId}",
+     *   tags={"Subjects"},
      *   summary="Получение одного предмета",
-     *   operationId="show_department_subject",
+     *   operationId="show_subject",
      *
      *   @OA\Parameter(
-     *      name="departmentSubjectId",
+     *      name="subjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -82,20 +98,20 @@ class DepartmentSubjectController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(DepartmentSubject $departmentSubject)
+    protected function show(Subject $subject)
     {
-        return $departmentSubject;
+        return $subject;
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/department_subjects/{departmentSubjectId}",
-     *   tags={"Department Subjects"},
+     * path="/api/v1/admin/subjects/{subjectId}",
+     *   tags={"subjects"},
      *   summary="Удаление предмета",
-     *   operationId="delete_department_subject",
+     *   operationId="delete_subject",
      *
      *   @OA\Parameter(
-     *      name="departmentSubjectId",
+     *      name="subjectId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -113,19 +129,28 @@ class DepartmentSubjectController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(DepartmentSubject $departmentSubject)
+    protected function destroy(Subject $subject)
     {
-        $departmentSubject->delete();
+        $subject->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/department_subjects",
-     *      tags={"Department Subjects"},
+     *      path="/api/v1/admin/subjects",
+     *      tags={"subjects"},
      *      summary="Создание предмета",
-     *      operationId="add_department_subject",
+     *      operationId="add_subject",
+     * 
+     *      @OA\Parameter(
+     *          name="parent_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      * 
      *      @OA\Parameter(
      *          name="name",
@@ -133,15 +158,6 @@ class DepartmentSubjectController extends Controller
      *          required=true,
      *          @OA\Schema(
      *              type="string"
-     *          )
-     *      ),
-     * 
-     *      @OA\Parameter(
-     *          name="department_id",
-     *          in="query",
-     *          required=true,
-     *          @OA\Schema(
-     *              type="integer"
      *          )
      *      ),
      * 
@@ -156,30 +172,37 @@ class DepartmentSubjectController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(DepartmentSubjectFormRequest $request)
+    protected function store(SubjectFormRequest $request)
     {
         $input = $request->validated();
 
-        $department = Department::findOrFail($input['department_id']);
-
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        $departmentSubject = DepartmentSubject::create($input);
+        $subject = new Subject;
+        $subject->name = $input['name'];
+        $subject->account_id = $this->accountService->getId();
 
-        return $departmentSubject;
+        $parent->subjects()->save($subject);
+
+        return $subject;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/department_subjects/{departmentSubjectId}",
-     *      tags={"Department Subjects"},
+     *      path="/api/v1/admin/subjects/{subjectId}",
+     *      tags={"Subjects"},
      *      summary="Обновление предмета",
-     *      operationId="edit_department_subject",
+     *      operationId="edit_subject",
      * 
      *      @OA\Parameter(
-     *          name="departmentSubjectId",
+     *          name="subjectId",
      *          in="path",
      *          required=true,
      *          @OA\Schema(
@@ -188,7 +211,7 @@ class DepartmentSubjectController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="department_id",
+     *          name="parent_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -216,18 +239,26 @@ class DepartmentSubjectController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(DepartmentSubject $departmentSubject, DepartmentSubjectFormRequest $request)
+    protected function update(Subject $subject, SubjectFormRequest $request)
     {
         $input = $request->validated();
-        
-        $department = Department::findOrFail($input['department_id']);
 
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->subjectable !== false) {
+            $parent = $this->subjectable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        if ($departmentSubject->update($input)) {
-            return $departmentSubject;
+        $subject->name = $input['name'];
+
+        $subject->faculties()->detach();
+        $subject->departments()->detach();
+
+        if ($parent->subjects()->save($subject)) {
+            return $subject;
         }
 
         return $this->sendError(__('Server error'));

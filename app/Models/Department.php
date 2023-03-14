@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
-use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
 use App\Models\Teacher;
+use App\Models\Subject;
 
 class Department extends Model
 {
@@ -51,11 +51,6 @@ class Department extends Model
         );
     }
 
-    public function department_subjects()
-    {
-        return $this->hasMany(DepartmentSubject::class);
-    }
-
     public function department_groups()
     {
         return $this->hasMany(DepartmentGroup::class);
@@ -64,6 +59,11 @@ class Department extends Model
     public function teachers()
     {
         return $this->morphToMany(Teacher::class, 'teacherable');
+    }
+
+    public function subjects()
+    {
+        return $this->morphToMany(Subject::class, 'subjectable');
     }
 
     public function hasAccount(int $account_id): bool

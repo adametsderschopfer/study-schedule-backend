@@ -135,11 +135,7 @@ class TeacherController extends Controller
      */
     protected function destroy(Teacher $teacher)
     {
-        // $parent->teachers();
         $teacher->delete();
-
-        // $teacher->faculties()->detach();
-        // $teacher->departments()->detach();
 
         return $this->sendResponse();
     }

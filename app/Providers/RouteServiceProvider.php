@@ -45,44 +45,44 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        // $this->bindModels([
-        //     [
-        //         'key' => 'scheduleSetting',
-        //         'model' => ScheduleSetting::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'faculty',
-        //         'model' => Faculty::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'department',
-        //         'model' => Department::class,
-        //         'isThrough' => true
-        //     ],
-        //     [
-        //         'key' => 'teacher',
-        //         'model' => Teacher::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'schedule',
-        //         'model' => Schedule::class,
-        //         'isThrough' => false
-        //     ],
-        //     [
-        //         'key' => 'subject',
-        //         'model' => Subject::class,
-        //         'isThrough' => false
-        //     ]
-        //     ,
-        //     [
-        //         'key' => 'group',
-        //         'model' => Group::class,
-        //         'isThrough' => false
-        //     ]
-        // ]);
+        $this->bindModels([
+            [
+                'key' => 'scheduleSetting',
+                'model' => ScheduleSetting::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'faculty',
+                'model' => Faculty::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'department',
+                'model' => Department::class,
+                'isThrough' => true
+            ],
+            [
+                'key' => 'teacher',
+                'model' => Teacher::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'schedule',
+                'model' => Schedule::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'subject',
+                'model' => Subject::class,
+                'isThrough' => false
+            ]
+            ,
+            [
+                'key' => 'group',
+                'model' => Group::class,
+                'isThrough' => false
+            ]
+        ]);
     }
 
     /**

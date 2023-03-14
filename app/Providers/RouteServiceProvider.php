@@ -14,6 +14,7 @@ use App\Models\Department;
 use App\Models\DepartmentSubject;
 use App\Models\DepartmentGroup;
 use App\Models\Teacher;
+use App\Models\Schedule;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -73,6 +74,11 @@ class RouteServiceProvider extends ServiceProvider
             [
                 'key' => 'teacher',
                 'model' => Teacher::class,
+                'isThrough' => false
+            ],
+            [
+                'key' => 'schedule',
+                'model' => Schedule::class,
                 'isThrough' => false
             ]
         ]);

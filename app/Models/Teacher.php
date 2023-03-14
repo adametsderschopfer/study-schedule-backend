@@ -60,7 +60,9 @@ class Teacher extends Model
         $schedules = $this->schedules;
 
         foreach ($schedules as $schedule) {
-            $groups[] = $schedule->group;
+            if ($schedule->group) {
+                $groups[] = $schedule->group;
+            }
         }
         
         return $groups;

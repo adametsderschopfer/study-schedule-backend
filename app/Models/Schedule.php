@@ -34,6 +34,7 @@ class Schedule extends Model
         'repeatability',
         'type',
         'group_id', 
+        'subject_id', 
         'sub_group',
         'repeat_start',
         'repeat_end'

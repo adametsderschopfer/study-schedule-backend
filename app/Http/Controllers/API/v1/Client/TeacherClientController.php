@@ -55,7 +55,7 @@ class TeacherClientController extends Controller
             ->get();
 
         foreach ($teachers as $teacher) {
-            $teacher['department_groups'] = $teacher->getDepartmentGroups();
+            $teacher['groups'] = $teacher->getGroups();
             unset($teacher['schedules']);
         }
 

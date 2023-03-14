@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DepartmentGroup>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
  */
-class DepartmentGroupFactory extends Factory
+class GroupFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class DepartmentGroupFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->jobTitle,
+            'name' => $this->faker->company,
             'degree' => $this->faker->randomDigit,
             'sub_group' => $this->faker->randomDigit,
             'year_of_education' => $this->faker->randomDigit,

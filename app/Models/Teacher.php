@@ -54,16 +54,16 @@ class Teacher extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    public function getDepartmentGroups(): array
+    public function getGroups(): array
     {
-        $department_groups = array();
+        $groups = array();
         $schedules = $this->schedules;
 
         foreach ($schedules as $schedule) {
-            $department_groups[] = $schedule->department_group;
+            $groups[] = $schedule->group;
         }
         
-        return $department_groups;
+        return $groups;
     }
 
     public function hasAccount(int $account_id): bool

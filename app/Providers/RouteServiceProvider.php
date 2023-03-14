@@ -11,10 +11,10 @@ use App\Models\Account;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
 use App\Models\Department;
-use App\Models\DepartmentGroup;
 use App\Models\Teacher;
 use App\Models\Schedule;
 use App\Models\Subject;
+use App\Models\Group;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -45,43 +45,44 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        $this->bindModels([
-            [
-                'key' => 'scheduleSetting',
-                'model' => ScheduleSetting::class,
-                'isThrough' => false
-            ],
-            [
-                'key' => 'faculty',
-                'model' => Faculty::class,
-                'isThrough' => false
-            ],
-            [
-                'key' => 'department',
-                'model' => Department::class,
-                'isThrough' => true
-            ],
-            [
-                'key' => 'department_group',
-                'model' => DepartmentGroup::class,
-                'isThrough' => true
-            ],
-            [
-                'key' => 'teacher',
-                'model' => Teacher::class,
-                'isThrough' => false
-            ],
-            [
-                'key' => 'schedule',
-                'model' => Schedule::class,
-                'isThrough' => false
-            ],
-            [
-                'key' => 'subject',
-                'model' => Subject::class,
-                'isThrough' => false
-            ]
-        ]);
+        // $this->bindModels([
+        //     [
+        //         'key' => 'scheduleSetting',
+        //         'model' => ScheduleSetting::class,
+        //         'isThrough' => false
+        //     ],
+        //     [
+        //         'key' => 'faculty',
+        //         'model' => Faculty::class,
+        //         'isThrough' => false
+        //     ],
+        //     [
+        //         'key' => 'department',
+        //         'model' => Department::class,
+        //         'isThrough' => true
+        //     ],
+        //     [
+        //         'key' => 'teacher',
+        //         'model' => Teacher::class,
+        //         'isThrough' => false
+        //     ],
+        //     [
+        //         'key' => 'schedule',
+        //         'model' => Schedule::class,
+        //         'isThrough' => false
+        //     ],
+        //     [
+        //         'key' => 'subject',
+        //         'model' => Subject::class,
+        //         'isThrough' => false
+        //     ]
+        //     ,
+        //     [
+        //         'key' => 'group',
+        //         'model' => Group::class,
+        //         'isThrough' => false
+        //     ]
+        // ]);
     }
 
     /**

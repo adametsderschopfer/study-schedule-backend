@@ -87,7 +87,7 @@ class DepartmentController extends Controller
     protected function show(Department $department)
     {
         return $department->load('subjects')
-                ->load('department_groups')
+                ->load('groups')
                 ->load('teachers');
     }
 
@@ -236,7 +236,7 @@ class DepartmentController extends Controller
 
         if ($department->update($input)) {
             return $department->load('subjects')
-                    ->load('department_groups')
+                    ->load('groups')
                     ->load('teachers');
         }
 

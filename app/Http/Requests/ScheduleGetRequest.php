@@ -24,7 +24,7 @@ class ScheduleGetRequest extends FormRequest
     public function rules()
     {
         return [
-            'department_group_id' => ['sometimes', 'integer', 'exists:App\Models\DepartmentGroup,id'],
+            'group_id' => ['sometimes', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
             'repeatability' => ['sometimes', 'integer'],
             'date' => ['sometimes', 'date', 'date_format:Y-m-d'],

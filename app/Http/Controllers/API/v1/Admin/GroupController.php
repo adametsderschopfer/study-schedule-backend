@@ -5,25 +5,38 @@ namespace App\Http\Controllers\API\v1\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
-use App\Models\DepartmentGroup;
+use App\Models\Account;
+use App\Models\Faculty;
 use App\Models\Department;
-use App\Http\Requests\DepartmentGroupFormRequest;
+use App\Models\Group;
+use App\Http\Requests\GroupFormRequest;
 
-class DepartmentGroupController extends Controller
+class GroupController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
+
+        switch ($this->accountService->getType()) {
+            case Account::TYPES['UNIVERSITY'] :
+                $this->groupable = Department::class;
+                break;
+            case Account::TYPES['COLLEGE'] :
+                $this->groupable = Faculty::class;
+                break;
+            default:
+                $this->groupable = false;
+        }
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/department_groups?department_id={departmentId}",
-     *   tags={"Department Groups"},
-     *   summary="Получение списка классов",
-     *   operationId="get_department_groups",
+     * path="/api/v1/admin/groups?parent_id={parentId}",
+     *   tags={"Groups"},
+     *   summary="Получение списка групп",
+     *   operationId="get_groups",
      * 
      *   @OA\Parameter(
-     *      name="departmentId",
+     *      name="parentId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -44,26 +57,29 @@ class DepartmentGroupController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('department_id');
+        $input = $request->only('parent_id');
 
-        $department = Department::findOrFail($input['department_id']);
-
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->groupable !== false) {
+            $parent = $this->groupable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        return $department->department_groups;
+        return $parent->groups;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/department_groups/{departmentGroupId}",
-     *   tags={"Department Groups"},
-     *   summary="Получение одного класса",
-     *   operationId="show_department_group",
+     * path="/api/v1/admin/groups/{groupId}",
+     *   tags={"Groups"},
+     *   summary="Получение одной группы",
+     *   operationId="show_group",
      *
      *   @OA\Parameter(
-     *      name="departmentGroupId",
+     *      name="groupId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -82,20 +98,20 @@ class DepartmentGroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(DepartmentGroup $departmentGroup)
+    protected function show(group $group)
     {
-        return $departmentGroup;
+        return $group;
     }
 
      /**
      * @OA\Delete(
-     * path="/api/v1/admin/department_groups/{departmentGroupId}",
-     *   tags={"Department Groups"},
-     *   summary="Удаление класса",
-     *   operationId="delete_department_group",
+     * path="/api/v1/admin/groups/{groupId}",
+     *   tags={"Groups"},
+     *   summary="Удаление группы",
+     *   operationId="delete_group",
      *
      *   @OA\Parameter(
-     *      name="departmentGroupId",
+     *      name="groupId",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -113,22 +129,22 @@ class DepartmentGroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function destroy(DepartmentGroup $departmentGroup)
+    protected function destroy(group $group)
     {
-        $departmentGroup->delete();
+        $group->delete();
 
         return $this->sendResponse();
     }
 
      /**
      * @OA\Post(
-     *      path="/api/v1/admin/department_groups",
-     *      tags={"Department Groups"},
-     *      summary="Создание класса",
-     *      operationId="add_department_group",
+     *      path="/api/v1/admin/groups",
+     *      tags={"Groups"},
+     *      summary="Создание группы",
+     *      operationId="add_group",
      * 
      *      @OA\Parameter(
-     *          name="department_id",
+     *          name="parent_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -192,30 +208,41 @@ class DepartmentGroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function store(DepartmentGroupFormRequest $request)
+    protected function store(GroupFormRequest $request)
     {
         $input = $request->validated();
 
-        $department = Department::findOrFail($input['department_id']);
-
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->groupable !== false) {
+            $parent = $this->groupable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        $departmentGroup = DepartmentGroup::create($input);
+        $group = new group;
+        $group->name = $input['name'];
+        $group->sub_group = $input['sub_group'];
+        $group->degree = $input['degree'];
+        $group->year_of_education = $input['year_of_education'];
+        $group->form_of_education = $input['form_of_education'];
+        $group->account_id = $this->accountService->getId();
 
-        return $departmentGroup;
+        $parent->groups()->save($group);
+
+        return $group;
     }
 
      /**
      * @OA\Put(
-     *      path="/api/v1/admin/department_groups/{departmentGroupId}",
-     *      tags={"Department Groups"},
-     *      summary="Обновление класса",
-     *      operationId="edit_department_group",
+     *      path="/api/v1/admin/groups/{groupId}",
+     *      tags={"Groups"},
+     *      summary="Обновление группы",
+     *      operationId="edit_group",
      * 
      *      @OA\Parameter(
-     *          name="departmentGroupId",
+     *          name="groupId",
      *          in="path",
      *          required=true,
      *          @OA\Schema(
@@ -224,7 +251,7 @@ class DepartmentGroupController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="department_id",
+     *          name="parent_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -288,18 +315,30 @@ class DepartmentGroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function update(DepartmentGroup $departmentGroup, DepartmentGroupFormRequest $request)
+    protected function update(Group $group, GroupFormRequest $request)
     {
         $input = $request->validated();
-        
-        $department = Department::findOrFail($input['department_id']);
 
-        if (!$department->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id']) && $this->groupable !== false) {
+            $parent = $this->groupable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        if ($departmentGroup->update($input)) {
-            return $departmentGroup;
+        $group->name = $input['name'];
+        $group->sub_group = $input['sub_group'];
+        $group->degree = $input['degree'];
+        $group->year_of_education = $input['year_of_education'];
+        $group->form_of_education = $input['form_of_education'];
+
+        $group->faculties()->detach();
+        $group->departments()->detach();
+
+        if ($parent->groups()->save($group)) {
+            return $group;
         }
 
         return $this->sendError(__('Server error'));

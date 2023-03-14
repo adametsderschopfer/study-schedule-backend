@@ -10,6 +10,7 @@ use App\Models\ScheduleSetting;
 use App\Models\ScheduleSettingItem;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Models\Group;
 
 class Schedule extends Model
 {
@@ -26,13 +27,13 @@ class Schedule extends Model
     protected $fillable = [
         'account_id', 
         'department_id', 
-        'schedule_setting_id', 
-        'department_group_id',
+        'schedule_setting_id',
         'teacher_id', 
         'shedule_setting_item_order',
         'day_of_week',
         'repeatability',
         'type',
+        'group_id', 
         'sub_group',
         'repeat_start',
         'repeat_end'
@@ -53,12 +54,12 @@ class Schedule extends Model
         'repeat_end' => 'datetime:Y-m-d',
         'department_id' => 'integer',
         'schedule_setting_id' => 'integer',
-        'department_group_id' => 'integer',
         'teacher_id' => 'integer',
         'shedule_setting_item_order' => 'integer',
         'day_of_week' => 'integer',
         'repeatability' => 'integer',
         'type' => 'integer',
+        'group_id' => 'integer',
         'sub_group' => 'integer'
     ];
 
@@ -70,11 +71,6 @@ class Schedule extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
-    }
-
-    public function department_group()
-    {
-        return $this->belongsTo(DepartmentGroup::class);
     }
 
     public function schedule_setting()
@@ -99,19 +95,24 @@ class Schedule extends Model
         return $this->belongsTo(Subject::class);
     }
 
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
     public static function checkRelations(array $input, $account_id): bool
     {
         $department = Department::findOrFail($input['department_id']);
         $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
         $subject = Subject::findOrFail($input['subject_id']);
-        $departmentGroup = DepartmentGroup::findOrFail($input['department_group_id']);
+        $group = Group::findOrFail($input['group_id']);
         $teacher = Teacher::findOrFail($input['teacher_id']);
 
         return (
             $department->hasAccount($account_id) &&
             $scheduleSetting->hasAccount($account_id) &&
             $subject->hasAccount($account_id) &&
-            $departmentGroup->hasAccount($account_id) &&
+            $group->hasAccount($account_id) &&
             $teacher->hasAccount($account_id)
         );
     }

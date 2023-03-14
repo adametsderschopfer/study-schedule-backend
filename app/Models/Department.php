@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Faculty;
 use App\Models\Account;
-use App\Models\DepartmentGroup;
+use App\Models\Group;
 use App\Models\Teacher;
 use App\Models\Subject;
 
@@ -51,9 +51,9 @@ class Department extends Model
         );
     }
 
-    public function department_groups()
+    public function groups()
     {
-        return $this->hasMany(DepartmentGroup::class);
+        return $this->morphToMany(Group::class, 'groupable');
     }
 
     public function teachers()

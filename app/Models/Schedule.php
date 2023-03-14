@@ -74,6 +74,11 @@ class Schedule extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function department_group()
+    {
+        return $this->belongsTo(DepartmentGroup::class);
+    }
+
     public function schedule_setting()
     {
         return $this->belongsTo(ScheduleSetting::class);

@@ -18,7 +18,7 @@ class ExternalAuthRequest
         $this->accountService = $accountService;
     }
 
-    public function send(): bool
+    public function getExternalAccountData(): ?ExternalAccount
     {
         $headers = getallheaders();
         
@@ -39,7 +39,6 @@ class ExternalAuthRequest
         $accountInfo = $response->json();
 
         if ($accountInfo['id'] !== (int) $headers[Account::EXTERNAL_ACCOUNT_ID_HEADER_KEY]) {
-            
             return false;
         }
 
@@ -53,11 +52,27 @@ class ExternalAuthRequest
         $externalAccount = new ExternalAccount();
         $externalAccount->setData($externalAccountData);
 
+        return $externalAccount;
+    }
+
+    public function sendWithCreate()
+    {
+        $externalAccount = $this->getExternalAccountData();
         $account = Account::saveOrCreate($externalAccount);
 
         if (!$account) {
             return false;
         }
+
+        $this->accountService->setData($account->getData());
+
+        return true;
+    }
+
+    public function sendWithCheck()
+    {
+        $externalAccount = $this->getExternalAccountData();
+        $account = Account::where('external_id', $externalAccount->getExternalId())->first();
 
         $this->accountService->setData($account->getData());
 

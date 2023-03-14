@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\Building;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,12 +32,18 @@ class AppServiceProvider extends ServiceProvider
             $account->schedule_settings()->delete();
             $account->faculties()->delete();
             $account->teachers()->delete();
+            $account->groups()->delete();
+            $account->subjects()->delete();
+            $account->buildings()->delete();
         });
 
         Account::restored(function($account) {
             $account->schedule_settings()->withTrashed()->restore();
             $account->faculties()->withTrashed()->restore();
             $account->teachers()->withTrashed()->restore();
+            $account->groups()->withTrashed()->restore();
+            $account->subjects()->withTrashed()->restore();
+            $account->buildings()->withTrashed()->restore();
         });
 
         ScheduleSetting::deleted(function ($schedule_setting) {
@@ -67,6 +74,10 @@ class AppServiceProvider extends ServiceProvider
             $department->groups()->withTrashed()->restore();
             $department->teachers()->withTrashed()->restore();
             $department->subjects()->withTrashed()->restore();
+        });
+
+        Building::deleted(function ($building) {
+            $building->building_rooms()->delete();
         });
     }
 }

@@ -11,6 +11,8 @@ use App\Models\ScheduleSettingItem;
 use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\Group;
+use App\Models\Building;
+use App\Models\BuildingClassroom;
 
 class Schedule extends Model
 {
@@ -29,6 +31,8 @@ class Schedule extends Model
         'department_id', 
         'schedule_setting_id',
         'teacher_id', 
+        'building_id',
+        'building_classroom_id',
         'shedule_setting_item_order',
         'day_of_week',
         'repeatability',
@@ -56,6 +60,8 @@ class Schedule extends Model
         'department_id' => 'integer',
         'schedule_setting_id' => 'integer',
         'teacher_id' => 'integer',
+        'building_id' => 'integer',
+        'building_classroom_id' => 'string',
         'shedule_setting_item_order' => 'integer',
         'day_of_week' => 'integer',
         'repeatability' => 'integer',
@@ -101,6 +107,16 @@ class Schedule extends Model
         return $this->belongsTo(Group::class);
     }
 
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
+
+    public function building_classroom()
+    {
+        return $this->belongsTo(BuildingClassroom::class);
+    }
+
     public static function checkRelations(array $input, $account_id): bool
     {
         $department = Department::findOrFail($input['department_id']);
@@ -108,13 +124,17 @@ class Schedule extends Model
         $subject = Subject::findOrFail($input['subject_id']);
         $group = Group::findOrFail($input['group_id']);
         $teacher = Teacher::findOrFail($input['teacher_id']);
+        $building = Building::findOrFail($input['building_id']);
+        $buildingClassroom = BuildingClassroom::findOrFail($input['building_classroom_id']);
 
         return (
             $department->hasAccount($account_id) &&
             $scheduleSetting->hasAccount($account_id) &&
             $subject->hasAccount($account_id) &&
             $group->hasAccount($account_id) &&
-            $teacher->hasAccount($account_id)
+            $teacher->hasAccount($account_id) && 
+            $building->hasAccount($account_id) &&
+            $buildingClassroom->hasAccount($account_id)
         );
     }
 }

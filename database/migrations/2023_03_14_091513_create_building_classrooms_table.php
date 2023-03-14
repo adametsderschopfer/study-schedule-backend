@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('building_id');
             $table->string('name');
             $table->timestamps();
-            $table->softDeletes();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
         });
     }

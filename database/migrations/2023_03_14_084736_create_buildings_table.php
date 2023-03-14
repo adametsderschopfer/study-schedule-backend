@@ -31,8 +31,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('groups', function (Blueprint $table) {
-            $table->dropForeign('groups_account_id_foreign');
+        Schema::table('buildings', function (Blueprint $table) {
+            $table->dropForeign('buildings_account_id_foreign');
         });
         Schema::dropIfExists('buildings');
     }

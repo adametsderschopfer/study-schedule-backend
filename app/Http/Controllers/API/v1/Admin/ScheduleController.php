@@ -32,9 +32,9 @@ class ScheduleController extends Controller
      *      in="path",
      *      required=false, 
      *      description="Required if not set date parameter. Values: [ current | next ].",
-     *      default="current", 
      *      @OA\Schema(
-     *           type="string"
+     *           type="string",
+     *           default="current"
      *      )
      *   ),
      * 
@@ -258,7 +258,7 @@ class ScheduleController extends Controller
      *          name="repeatability",
      *          in="query",
      *          required=true,
-     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD"
+     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -424,7 +424,7 @@ class ScheduleController extends Controller
      *          name="repeatability",
      *          in="query",
      *          required=true,
-     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD"
+     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD",
      *          @OA\Schema(
      *              type="integer"
      *          )

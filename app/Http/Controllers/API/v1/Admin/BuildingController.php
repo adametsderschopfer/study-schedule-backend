@@ -8,7 +8,7 @@ use App\Services\AccountService;
 use App\Models\Building;
 use App\Http\Requests\BuildingFormRequest;
 
-class buildingController extends Controller
+class BuildingController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
@@ -35,6 +35,7 @@ class buildingController extends Controller
     protected function index()
     {
         return Building::where('account_id', $this->accountService->getId())
+                ->with('building_classrooms')
                 ->get();
     }
 
@@ -67,7 +68,7 @@ class buildingController extends Controller
      */
     protected function show(building $building)
     {
-        return $building;
+        return $building->load('building_classrooms');
     }
 
      /**
@@ -107,7 +108,7 @@ class buildingController extends Controller
      * @OA\Post(
      *      path="/api/v1/admin/buildings",
      *      tags={"Buildings"},
-     *      summary="Создание факультета",
+     *      summary="Создание корпуса",
      *      operationId="add_building",
      * 
      *      @OA\Parameter(
@@ -126,6 +127,18 @@ class buildingController extends Controller
      *          @OA\Schema(
      *              type="string"
      *          )
+     *      ),
+     *      
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="building_classrooms", type="array",
+     *                  @OA\Items(type="object", properties = {
+     *                      @OA\Property(property="id", type="string"),
+     *                      @OA\Property(property="name", type="string"),
+     *                  }),
+     *              )
+     *          ),
      *      ),
      * 
      *      @OA\Response(
@@ -146,8 +159,10 @@ class buildingController extends Controller
         $input['account_id'] = $this->accountService->getId();
 
         $building = Building::create($input);
+
+        $building->giveBuildingsClassrooms($input['building_classrooms']);
         
-        return $building;
+        return $building->load('building_classrooms');
     }
 
      /**
@@ -184,6 +199,18 @@ class buildingController extends Controller
      *          )
      *      ),
      * 
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="building_classrooms", type="array",
+     *                  @OA\Items(type="object", properties = {
+     *                      @OA\Property(property="id", type="string"),
+     *                      @OA\Property(property="name", type="string"),
+     *                  }),
+     *              )
+     *          ),
+     *      ),
+     * 
      *      @OA\Response(
      *          response=200,
      *          description="Success",
@@ -199,8 +226,10 @@ class buildingController extends Controller
     {
         $input = $request->validated();
 
+        $building->updateBuildingsClassrooms($input['building_classrooms']);
+
         if ($building->update($input)) {
-            return $building;
+            return $building->load('building_classrooms');
         }
 
         return $this->sendError(__('Server error'));

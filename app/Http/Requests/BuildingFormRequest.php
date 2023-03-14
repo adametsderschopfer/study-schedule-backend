@@ -26,6 +26,9 @@ class BuildingFormRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['sometimes', 'string', 'max:255'],
+            'building_classrooms' => ['sometimes', 'array'],
+            'building_classrooms.*.id' => ['required_with:building_classrooms', 'string', 'max:255'],
+            'building_classrooms.*.name' => ['required_with:building_classrooms', 'string', 'max:255'],
         ];
     }
 }

@@ -29,13 +29,13 @@ class ScheduleAction
         abort(404);
     }
 
-    private function getByDate(array $input)
+    private function scheduleFilter(array $input)
     {
         $selectDate = strtotime($input['date']);
         $day = date('N', $selectDate);
         $date = date('Y-m-d', $selectDate);
         
-        $schedules = Schedule::where('account_id', $this->accountService->getId())
+        $filter = Schedule::where('account_id', $this->accountService->getId())
                 ->where('repeat_start', '<=', $date)
                 ->where('repeat_end', '>=', $date)
                 ->where('day_of_week', $day)
@@ -50,28 +50,34 @@ class ScheduleAction
 
         $week = date('W', $selectDate);
         if ($week % 2 === 0) {
-            $schedules->where('repeatability', '!=', Schedule::REPEATABILITIES['ODD']);
+            $filter->where('repeatability', '!=', Schedule::REPEATABILITIES['ODD']);
         } else {
-            $schedules->where('repeatability', '!=', Schedule::REPEATABILITIES['EVEN']);
+            $filter->where('repeatability', '!=', Schedule::REPEATABILITIES['EVEN']);
         }
 
         if (isset($input['group_id'])) {
-            $schedules->where('group_id', $input['group_id']);
+            $filter->where('group_id', $input['group_id']);
         }
 
         if (isset($input['teacher_id'])) {
-            $schedules->where('teacher_id', $input['teacher_id']);
+            $filter->where('teacher_id', $input['teacher_id']);
         }
 
         if (isset($input['building_id']) && !isset($input['building_classroom_id'])) {
-            $schedules->where('building_id', $input['building_id']);
+            $filter->where('building_id', $input['building_id']);
         }
 
         if (isset($input['building_classroom_id'])) {
-            $schedules->where('building_classroom_id', $input['building_classroom_id']);
+            $filter->where('building_classroom_id', $input['building_classroom_id']);
         }
 
-        $schedules = $schedules->get();
+        return $filter;
+    }
+
+    private function getByDate(array $input)
+    {
+        $filteredSchedules = $this->scheduleFilter($input);
+        $schedules = $filteredSchedules->get();
 
         foreach ($schedules as $schedule) {
             $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
@@ -106,5 +112,28 @@ class ScheduleAction
         }
         
         return $dates;
+    }
+
+    public function getCountByYear(string $year, array $input): array
+    {
+        $year_start = date('Y-m-d', strtotime('First day of January ' . $year));
+        $year_end = date('Y-m-d', strtotime('First day of January ' . $year . ' +1 year'));
+
+        $period = new DatePeriod(
+            new DateTime($year_start),
+            new DateInterval('P1D'),
+            new DateTime($year_end)
+        );
+
+        $days = Array();
+
+        foreach ($period as $date) {
+            $day = (string) $date->format('Y-m-d');
+            $input['date'] = $day;
+            $count = $this->scheduleFilter($input)->count();
+            $days[$day] = $count;
+        }
+
+        return $days;
     }
 }

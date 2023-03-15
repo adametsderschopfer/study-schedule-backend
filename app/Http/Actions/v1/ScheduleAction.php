@@ -44,7 +44,9 @@ class ScheduleAction
                 ->with('schedule_setting')
                 ->with('subject')
                 ->with('group')
-                ->with('teacher');
+                ->with('teacher')
+                ->with('building')
+                ->with('building_classroom');
 
         $week = date('W', $selectDate);
         if ($week % 2 === 0) {
@@ -59,6 +61,14 @@ class ScheduleAction
 
         if (isset($input['teacher_id'])) {
             $schedules->where('teacher_id', $input['teacher_id']);
+        }
+
+        if (isset($input['building_id']) && !isset($input['building_classroom_id'])) {
+            $schedules->where('building_id', $input['building_id']);
+        }
+
+        if (isset($input['building_classroom_id'])) {
+            $schedules->where('building_classroom_id', $input['building_classroom_id']);
         }
 
         $schedules = $schedules->get();

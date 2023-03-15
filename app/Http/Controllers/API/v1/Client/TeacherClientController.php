@@ -33,7 +33,7 @@ class TeacherClientController extends Controller
      /**
      * @OA\Get(
      * path="/api/v1/client/teachers",
-     *   tags={"Teachers"},
+     *   tags={"Teachers Client"},
      *   summary="Получение списка преподавателей",
      *   operationId="get_client_teachers",
      * 

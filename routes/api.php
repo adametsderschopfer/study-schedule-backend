@@ -10,9 +10,11 @@ use App\Http\Controllers\API\v1\Admin\GroupController;
 use App\Http\Controllers\API\v1\Admin\TeacherController;
 use App\Http\Controllers\API\v1\Admin\ScheduleController;
 use App\Http\Controllers\API\v1\Admin\SubjectController;
+use App\Http\Controllers\API\v1\Admin\BuildingController;
 use App\Http\Controllers\API\v1\Client\FacultyClientController;
 use App\Http\Controllers\API\v1\Client\ScheduleClientController;
 use App\Http\Controllers\API\v1\Client\TeacherClientController;
+use App\Http\Controllers\API\v1\Client\BuildingClientController;
 
 Route::prefix('v1')->group(function()
 {
@@ -23,6 +25,7 @@ Route::prefix('v1')->group(function()
         Route::get('faculties', [FacultyClientController::class, 'index']);
         Route::get('schedules', [ScheduleClientController::class, 'index']);
         Route::get('teachers', [TeacherClientController::class, 'index']);
+        Route::get('buildings', [BuildingClientController::class, 'index']);
     });
 
     Route::middleware('hasAccount')
@@ -37,5 +40,6 @@ Route::prefix('v1')->group(function()
         Route::resource('schedules', ScheduleController::class);
         Route::resource('subjects', SubjectController::class);
         Route::resource('groups', GroupController::class);
+        Route::resource('buildings', BuildingController::class);
     });
 });

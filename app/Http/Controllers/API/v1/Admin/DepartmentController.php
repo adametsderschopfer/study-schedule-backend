@@ -54,7 +54,10 @@ class DepartmentController extends Controller
             abort(404);
         }
 
-        return $faculty->departments;
+        return $faculty->departments
+            ->load('subjects')
+            ->load('groups')
+            ->load('teachers');
     }
 
      /**
@@ -88,7 +91,8 @@ class DepartmentController extends Controller
     {
         return $department->load('subjects')
                 ->load('groups')
-                ->load('teachers');
+                ->load('teachers')
+                ->load('subjects');
     }
 
      /**

@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             GroupSeeder::class,
             BuildingSeeder::class,
+            BuildingClassroomSeeder::class,
+            ScheduleSeeder::class,
         ]);
     }
 }

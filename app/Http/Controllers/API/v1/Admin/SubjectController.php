@@ -160,6 +160,16 @@ class SubjectController extends Controller
      *              type="string"
      *          )
      *      ),
+     *      
+     *      @OA\Parameter(
+     *          name="set_for_all",
+     *          in="query",
+     *          required=false,
+     *          description="Only for Account type - College",
+     *          @OA\Schema(
+     *              type="boolean"
+     *          )
+     *      ),
      * 
      *      @OA\Response(
      *          response=200,
@@ -176,20 +186,27 @@ class SubjectController extends Controller
     {
         $input = $request->validated();
 
-        if (isset($input['parent_id']) && $this->subjectable !== false) {
-            $parent = $this->subjectable::findOrFail($input['parent_id']);
-            if (!$parent->hasAccount($this->accountService->getId())) {
-                abort(404);
-            }
+        if ($this->accountService->getType() == Account::TYPES['COLLEGE'] && isset($input['set_for_all']) && $input['set_for_all'] == true) {
+            $parents = $this->subjectable::where('account_id', $this->accountService->getId())->get();
         } else {
-            $parent = Account::findOrFail($this->accountService->getId());
+            if (isset($input['parent_id']) && $this->subjectable !== false) {
+                $parent = $this->subjectable::findOrFail($input['parent_id']);
+                if (!$parent->hasAccount($this->accountService->getId())) {
+                    abort(404);
+                }
+            } else {
+                $parent = Account::findOrFail($this->accountService->getId());
+            }
+            $parents[] = $parent;
         }
 
         $subject = new Subject;
         $subject->name = $input['name'];
         $subject->account_id = $this->accountService->getId();
 
-        $parent->subjects()->save($subject);
+        foreach ($parents as $parent) {
+            $parent->subjects()->save($subject);
+        }
 
         return $subject;
     }

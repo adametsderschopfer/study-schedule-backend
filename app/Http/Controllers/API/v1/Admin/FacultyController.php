@@ -35,6 +35,10 @@ class FacultyController extends Controller
     protected function index()
     {
         return Faculty::where('account_id', $this->accountService->getId())
+                ->with('departments')
+                ->with('subjects')
+                ->with('groups')
+                ->with('teachers')
                 ->get();
     }
 
@@ -67,7 +71,10 @@ class FacultyController extends Controller
      */
     protected function show(Faculty $faculty)
     {
-        return $faculty->load('teachers');
+        return $faculty->load('departments')
+            ->load('subjects')
+            ->load('groups')
+            ->load('teachers');
     }
 
      /**
@@ -182,7 +189,10 @@ class FacultyController extends Controller
         $input = $request->validated();
 
         if ($faculty->update($input)) {
-            return $faculty->load('teachers');
+            return $faculty->load('departments')
+                ->load('subjects')
+                ->load('groups')
+                ->load('teachers');
         }
 
         return $this->sendError(__('Server error'));

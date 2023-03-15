@@ -32,6 +32,7 @@ class SubjectFormRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => Rule::requiredIf($this->accountService->getType() !== Account::TYPES['SCHOOL']),
+            'set_for_all' => ['sometimes', 'boolean']
         ];
     }
 }

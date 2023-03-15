@@ -26,6 +26,8 @@ class ScheduleGetRequest extends FormRequest
         return [
             'group_id' => ['sometimes', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
+            'building_id' => ['sometimes', 'integer', 'exists:App\Models\Building,id'],
+            'building_classroom_id' => ['sometimes', 'string', 'exists:App\Models\BuildingClassroom,id'],
             'repeatability' => ['sometimes', 'integer'],
             'date' => ['sometimes', 'date', 'date_format:Y-m-d'],
             'week' => ['required_without:date', 'string', 'in:current,next']

@@ -29,6 +29,8 @@ class ScheduleFormRequest extends FormRequest
             'subject_id' => ['sometimes', 'integer', 'exists:App\Models\Subject,id'],
             'group_id' => ['required', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['required', 'integer', 'exists:App\Models\Teacher,id'],
+            'building_id' => ['required', 'integer', 'exists:App\Models\Building,id'],
+            'building_classroom_id' => ['required', 'string', 'exists:App\Models\BuildingClassroom,id'],
             'shedule_setting_item_order' => ['required', 'integer', 'max:99'],
             'day_of_week' => ['required', 'integer', 'max:6'],
             'repeatability' => ['required', 'integer', 'in:0,1,2,3'],

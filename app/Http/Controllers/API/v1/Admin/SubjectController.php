@@ -106,7 +106,7 @@ class SubjectController extends Controller
      /**
      * @OA\Delete(
      * path="/api/v1/admin/subjects/{subjectId}",
-     *   tags={"subjects"},
+     *   tags={"Subjects"},
      *   summary="Удаление предмета",
      *   operationId="delete_subject",
      *
@@ -139,7 +139,7 @@ class SubjectController extends Controller
      /**
      * @OA\Post(
      *      path="/api/v1/admin/subjects",
-     *      tags={"subjects"},
+     *      tags={"Subjects"},
      *      summary="Создание предмета",
      *      operationId="add_subject",
      * 

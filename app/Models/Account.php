@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 use App\DTO\ExternalAccount;
 use App\Models\ScheduleSetting;
 use App\Models\Faculty;
 use App\Models\Teacher;
+use App\Models\Building;
 
 class Account extends Model
 {
@@ -73,6 +73,16 @@ class Account extends Model
     public function subjects()
     {
         return $this->hasMany(Subject::class);
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(Group::class);
+    }
+
+    public function buildings()
+    {
+        return $this->hasMany(Building::class);
     }
 
     public function hasAccount(int $account_id): bool

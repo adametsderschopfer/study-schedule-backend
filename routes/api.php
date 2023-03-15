@@ -14,6 +14,7 @@ use App\Http\Controllers\API\v1\Admin\BuildingController;
 use App\Http\Controllers\API\v1\Client\FacultyClientController;
 use App\Http\Controllers\API\v1\Client\ScheduleClientController;
 use App\Http\Controllers\API\v1\Client\TeacherClientController;
+use App\Http\Controllers\API\v1\Client\BuildingClientController;
 
 Route::prefix('v1')->group(function()
 {
@@ -24,6 +25,7 @@ Route::prefix('v1')->group(function()
         Route::get('faculties', [FacultyClientController::class, 'index']);
         Route::get('schedules', [ScheduleClientController::class, 'index']);
         Route::get('teachers', [TeacherClientController::class, 'index']);
+        Route::get('buildings', [BuildingClientController::class, 'index']);
     });
 
     Route::middleware('hasAccount')

@@ -32,9 +32,9 @@ class ScheduleClientController extends Controller
      *      in="path",
      *      required=false, 
      *      description="Required if not set date parameter. Values: [ current | next ].",
-     *      default="current, 
      *      @OA\Schema(
-     *           type="string"
+     *           type="string",
+     *           default="current"
      *      )
      *   ),
      * 

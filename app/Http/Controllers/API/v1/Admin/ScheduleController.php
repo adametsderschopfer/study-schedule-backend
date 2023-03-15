@@ -22,7 +22,7 @@ class ScheduleController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/schedules?week={week}&date={date}&teacher_id={teacherId}&group_id={groupId}",
+     * path="/api/v1/admin/schedules?week={week}&date={date}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
      *   tags={"Schedules"},
      *   summary="Получение списка расписаний",
      *   operationId="get_schedules",
@@ -32,9 +32,9 @@ class ScheduleController extends Controller
      *      in="path",
      *      required=false, 
      *      description="Required if not set date parameter. Values: [ current | next ].",
-     *      default="current", 
      *      @OA\Schema(
-     *           type="string"
+     *           type="string",
+     *           default="current"
      *      )
      *   ),
      * 
@@ -59,6 +59,24 @@ class ScheduleController extends Controller
      * 
      *   @OA\Parameter(
      *      name="groupId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingClassroomId",
      *      in="path",
      *      required=false, 
      *      @OA\Schema(
@@ -117,7 +135,9 @@ class ScheduleController extends Controller
             ->load('schedule_setting')
             ->load('subject')
             ->load('group')
-            ->load('teacher');
+            ->load('teacher')
+            ->load('building')
+            ->load('building_classroom');
 
         $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
 
@@ -210,6 +230,24 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
+     *          name="building_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="building_classroom_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
      *          name="shedule_setting_item_order",
      *          in="query",
      *          required=true,
@@ -258,7 +296,7 @@ class ScheduleController extends Controller
      *          name="repeatability",
      *          in="query",
      *          required=true,
-     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD"
+     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -311,7 +349,9 @@ class ScheduleController extends Controller
             ->load('schedule_setting')
             ->load('subject')
             ->load('group')
-            ->load('teacher');
+            ->load('teacher')
+            ->load('building')
+            ->load('building_classroom');
     }
 
      /**
@@ -376,6 +416,24 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
+     *          name="building_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="building_classroom_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
      *          name="shedule_setting_item_order",
      *          in="query",
      *          required=true,
@@ -424,7 +482,7 @@ class ScheduleController extends Controller
      *          name="repeatability",
      *          in="query",
      *          required=true,
-     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD"
+     *          description="0 = ONCE, 1 = EVERY, 2 = EVEN, 3 = ODD",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -468,7 +526,9 @@ class ScheduleController extends Controller
                 ->load('schedule_setting')
                 ->load('subject')
                 ->load('group')
-                ->load('teacher');
+                ->load('teacher')
+                ->load('building')
+                ->load('building_classroom');
         }
 
         return $this->sendError(__('Server error'));

@@ -131,7 +131,9 @@ class ScheduleAction
             $day = (string) $date->format('Y-m-d');
             $input['date'] = $day;
             $count = $this->scheduleFilter($input)->count();
-            $days[$day] = $count;
+            if ($count > 0) {
+                $days[$day] = $count;
+            }
         }
 
         return $days;

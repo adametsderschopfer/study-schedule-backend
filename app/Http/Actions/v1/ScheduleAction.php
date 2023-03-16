@@ -114,15 +114,38 @@ class ScheduleAction
         return $dates;
     }
 
-    public function getCountByYear(string $year, array $input): array
+    public function getWeekByDate(array $input)
     {
-        $year_start = date('Y-m-d', strtotime('First day of January ' . $year));
-        $year_end = date('Y-m-d', strtotime('First day of January ' . $year . ' +1 year'));
+        $selectDate = new DateTime($input['date']);
+        $dateStart = date('Y-m-d', $selectDate->modify("Last monday")->getTimestamp());
+        $dateEnd = date('Y-m-d', $selectDate->modify("Next monday")->getTimestamp());
 
         $period = new DatePeriod(
-            new DateTime($year_start),
+            new DateTime($dateStart),
             new DateInterval('P1D'),
-            new DateTime($year_end)
+            new DateTime($dateEnd)
+        );
+        
+        $dates = array();
+        foreach ($period as $date) {
+            $day = (string) $date->format('Y-m-d');
+            $input['date'] = $day;
+            $schedules = $this->getByDate($input)->toArray();
+            $dates[$day] = !empty($schedules) ? $schedules : null;
+        }
+        
+        return $dates;
+    }
+
+    public function getCountByPeriod(array $input): array
+    {
+        $dateStart = date('Y-m-d', strtotime($input['date_start']));
+        $dateEnd = date('Y-m-d', strtotime($input['date_end'] . ' +1 day'));
+
+        $period = new DatePeriod(
+            new DateTime($dateStart),
+            new DateInterval('P1D'),
+            new DateTime($dateEnd)
         );
 
         $days = Array();

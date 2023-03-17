@@ -22,27 +22,24 @@ class ScheduleController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/schedules?week={week}&date={date}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
+     * path="/api/v1/admin/schedules?date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
      *   tags={"Schedules"},
      *   summary="Получение списка расписаний",
      *   operationId="get_schedules",
      * 
      *   @OA\Parameter(
-     *      name="week",
+     *      name="dateStart",
      *      in="path",
-     *      required=false, 
-     *      description="Required if not set date parameter. Values: [ current | next ].",
+     *      required=true, 
      *      @OA\Schema(
-     *           type="string",
-     *           default="current"
+     *           type="string"
      *      )
      *   ),
      * 
      *   @OA\Parameter(
-     *      name="date",
+     *      name="dateEnd",
      *      in="path",
-     *      required=false, 
-     *      description="Required if not set week parameter. Format: Y-m-d",
+     *      required=true, 
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -80,7 +77,7 @@ class ScheduleController extends Controller
      *      in="path",
      *      required=false, 
      *      @OA\Schema(
-     *           type="integer"
+     *           type="string"
      *      )
      *   ),
      * 

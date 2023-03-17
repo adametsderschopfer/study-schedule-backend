@@ -24,8 +24,6 @@ Route::prefix('v1')->group(function()
     {
         Route::get('faculties', [FacultyClientController::class, 'index']);
         Route::get('schedules', [ScheduleClientController::class, 'index']);
-        Route::get('schedules_by_period', [ScheduleClientController::class, 'getSchedulesCountByPeriod']);
-        Route::get('schedules_week_by_date', [ScheduleClientController::class, 'getSchedulesWeekByDate']);
         Route::get('teachers', [TeacherClientController::class, 'index']);
         Route::get('buildings', [BuildingClientController::class, 'index']);
     });

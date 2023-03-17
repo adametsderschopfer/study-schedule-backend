@@ -24,13 +24,12 @@ class ScheduleGetRequest extends FormRequest
     public function rules()
     {
         return [
+            'date_start' => ['required', 'date', 'date_format:Y-m-d'],
+            'date_end' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:date_start'],
             'group_id' => ['sometimes', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
             'building_id' => ['sometimes', 'integer', 'exists:App\Models\Building,id'],
-            'building_classroom_id' => ['sometimes', 'string', 'exists:App\Models\BuildingClassroom,id'],
-            'repeatability' => ['sometimes', 'integer'],
-            'date' => ['required_without:week', 'date', 'date_format:Y-m-d'],
-            'week' => ['required_without:date', 'string', 'in:current,next']
+            'building_classroom_id' => ['sometimes', 'string', 'exists:App\Models\BuildingClassroom,id']
         ];
     }
 }

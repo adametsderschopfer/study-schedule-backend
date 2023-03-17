@@ -13,6 +13,7 @@ class Group extends Model
 
     protected $fillable = [
         'account_id', 
+        'letter', 
         'sub_group',
         'degree',
         'year_of_education',

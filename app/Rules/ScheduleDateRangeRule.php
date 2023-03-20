@@ -18,8 +18,9 @@ class ScheduleDateRangeRule implements Rule
         $input = request()->only('date_start');
         if (isset($input['date_start'])) {
             $this->date_start = $input['date_start'];
+        } else {
+            $this->date_start = false;
         }
-        $this->date_start = false;
     }
 
     /**
@@ -34,6 +35,7 @@ class ScheduleDateRangeRule implements Rule
         if (!$this->date_start) {
             return false;
         }
+        
         $date_start = new DateTime($this->date_start);
         $date_end = new DateTime($value);
         $interval = $date_start->diff($date_end);

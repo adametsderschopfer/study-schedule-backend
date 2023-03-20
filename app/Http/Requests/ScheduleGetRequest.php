@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\ScheduleDateRangeRule;
 
 class ScheduleGetRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class ScheduleGetRequest extends FormRequest
     {
         return [
             'date_start' => ['required', 'date', 'date_format:Y-m-d'],
-            'date_end' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:date_start'],
+            'date_end' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:date_start', new ScheduleDateRangeRule],
             'group_id' => ['sometimes', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
             'building_id' => ['sometimes', 'integer', 'exists:App\Models\Building,id'],

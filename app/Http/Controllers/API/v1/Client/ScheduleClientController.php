@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
 use App\Http\Requests\ScheduleGetRequest;
-use App\Http\Requests\ScheduleGetByPeriodRequest;
 use App\Http\Actions\v1\ScheduleAction;
 use DateTime;
 

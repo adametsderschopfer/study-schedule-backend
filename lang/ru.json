@@ -7,5 +7,6 @@
     "(and :count more error)": "(И еще :count ошибка)", 
     "(and :count more errors)": "(И еще несколько ошибок)",
     "DateEnd after DateStart": "Дата окончания должно быть больше или равно дате начала",
-    "Date not format": "Неверный формат даты"
+    "Date not format": "Неверный формат даты",
+    "Period cannot exceed 31 days": "Период не может превышать 31 день"
 }

@@ -162,6 +162,15 @@ class GroupController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
+     *          name="letter",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
      *          name="sub_group",
      *          in="query",
      *          required=true,
@@ -221,12 +230,13 @@ class GroupController extends Controller
             $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        $group = new group;
+        $group = new Group;
         $group->name = $input['name'];
-        $group->sub_group = $input['sub_group'];
-        $group->degree = $input['degree'];
-        $group->year_of_education = $input['year_of_education'];
-        $group->form_of_education = $input['form_of_education'];
+        $group->letter = $input['letter'] ?? null;
+        $group->sub_group = $input['sub_group'] ?? 0;
+        $group->degree = $input['degree'] ?? 0;
+        $group->year_of_education = $input['year_of_education'] ?? 0;
+        $group->form_of_education = $input['form_of_education'] ?? 0;
         $group->account_id = $this->accountService->getId();
 
         $parent->groups()->save($group);
@@ -261,6 +271,15 @@ class GroupController extends Controller
      * 
      *      @OA\Parameter(
      *          name="name",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="letter",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -329,10 +348,11 @@ class GroupController extends Controller
         }
 
         $group->name = $input['name'];
-        $group->sub_group = $input['sub_group'];
-        $group->degree = $input['degree'];
-        $group->year_of_education = $input['year_of_education'];
-        $group->form_of_education = $input['form_of_education'];
+        $group->letter = $input['letter'] ?? null;
+        $group->sub_group = $input['sub_group'] ?? 0;
+        $group->degree = $input['degree'] ?? 0;
+        $group->year_of_education = $input['year_of_education'] ?? 0;
+        $group->form_of_education = $input['form_of_education'] ?? 0;
 
         $group->faculties()->detach();
         $group->departments()->detach();

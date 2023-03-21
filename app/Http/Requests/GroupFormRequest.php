@@ -31,6 +31,7 @@ class GroupFormRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'letter' => ['sometimes', 'string'],
             'sub_group' => ['sometimes', 'integer'],
             'degree' => ['sometimes', 'integer'],
             'year_of_education' => ['sometimes', 'integer'],

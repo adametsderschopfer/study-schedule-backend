@@ -23,6 +23,7 @@ RUN composer install --no-scripts --no-autoloader
 COPY ./ /var/www
 RUN composer dump-autoload --optimize && \
       composer run-script post-root-package-install && \
-      composer run-script post-create-project-cmd
+      composer run-script post-create-project-cmd && \
+      php artisan optimize
 EXPOSE 8000
 CMD [ "php", "artisan", "serve" , "--host=0.0.0.0", "--port=8000"]

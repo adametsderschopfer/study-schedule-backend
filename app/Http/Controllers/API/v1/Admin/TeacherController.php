@@ -208,8 +208,8 @@ class TeacherController extends Controller
         $teacher = new Teacher;
         $teacher->account_id = $input['account_id'];
         $teacher->full_name = $input['full_name'];
-        $teacher->position = $input['position'];
-        $teacher->degree = $input['degree'];
+        $teacher->position = $input['position'] ?? null;
+        $teacher->degree = $input['degree'] ?? null;
 
         $parent->teachers()->save($teacher);
 
@@ -291,8 +291,8 @@ class TeacherController extends Controller
 
         $teacher->account_id = $this->accountService->getId();
         $teacher->full_name = $input['full_name'];
-        $teacher->position = $input['position'];
-        $teacher->degree = $input['degree'];
+        $teacher->position = $input['position'] ?? null;
+        $teacher->degree = $input['degree'] ?? null;
 
         $teacher->faculties()->detach();
         $teacher->departments()->detach();

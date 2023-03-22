@@ -33,7 +33,7 @@ class Schedule extends Model
         'teacher_id', 
         'building_id',
         'building_classroom_id',
-        'shedule_setting_item_order',
+        'schedule_setting_item_order',
         'day_of_week',
         'repeatability',
         'type',
@@ -62,7 +62,7 @@ class Schedule extends Model
         'teacher_id' => 'integer',
         'building_id' => 'integer',
         'building_classroom_id' => 'string',
-        'shedule_setting_item_order' => 'integer',
+        'schedule_setting_item_order' => 'integer',
         'day_of_week' => 'integer',
         'repeatability' => 'integer',
         'type' => 'integer',
@@ -88,7 +88,7 @@ class Schedule extends Model
     public function schedule_setting_item()
     {
         return ScheduleSettingItem::where('schedule_setting_id', $this->schedule_setting_id)
-                    ->where('order', $this->shedule_setting_item_order)
+                    ->where('order', $this->schedule_setting_item_order)
                     ->get() ?? null;
     }
 

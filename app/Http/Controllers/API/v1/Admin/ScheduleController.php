@@ -248,7 +248,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="shedule_setting_item_order",
+     *          name="schedule_setting_item_order",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -257,7 +257,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="shedule_setting_item_order",
+     *          name="schedule_setting_item_order",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -434,7 +434,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="shedule_setting_item_order",
+     *          name="schedule_setting_item_order",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -443,7 +443,7 @@ class ScheduleController extends Controller
      *      ),
      * 
      *      @OA\Parameter(
-     *          name="shedule_setting_item_order",
+     *          name="schedule_setting_item_order",
      *          in="query",
      *          required=true,
      *          @OA\Schema(

@@ -58,10 +58,10 @@ class ScheduleAction
         $date = date('Y-m-d', $selectDate);
         
         $filter = Schedule::where('account_id', $this->accountService->getId())
-                ->orderBy('shedule_setting_item_order', 'asc')
                 ->where('repeat_start', '<=', $date)
                 ->where('repeat_end', '>=', $date)
                 ->where('day_of_week', $day)
+                ->orderBy('schedule_setting_item_order', 'asc')
                 ->with('department')
                 ->with('schedule_setting')
                 ->with('subject')

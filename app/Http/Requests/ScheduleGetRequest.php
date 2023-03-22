@@ -30,7 +30,8 @@ class ScheduleGetRequest extends FormRequest
             'group_id' => ['sometimes', 'integer', 'exists:App\Models\Group,id'],
             'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
             'building_id' => ['sometimes', 'integer', 'exists:App\Models\Building,id'],
-            'building_classroom_id' => ['sometimes', 'string', 'exists:App\Models\BuildingClassroom,id']
+            'building_classroom_id' => ['sometimes', 'string', 'exists:App\Models\BuildingClassroom,id'],
+            'page' => ['sometimes', 'integer']
         ];
     }
 }

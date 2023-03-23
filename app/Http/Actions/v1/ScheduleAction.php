@@ -4,107 +4,135 @@ namespace App\Http\Actions\v1;
 
 use App\Services\AccountService;
 use App\Models\Schedule;
+use App\DTO\ScheduleRepeatability;
 use DatePeriod;
 use DateTime;
 use DateInterval;
 
 class ScheduleAction
 {
-    private const WEEK_NEXT = 'next';
+    private const SCHEDULES_DEFAULT_LIMIT = 20;
 
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
-    public function get(array $input)
-    {
-        if (isset($input['date'])) {
-            return $this->getByDate($input);
-        }
+    public function get(array $input) {
+        $page = (int) $input['page']*self::SCHEDULES_DEFAULT_LIMIT ?? 0;
 
-        if (isset($input['week'])) {
-            return $this->getByWeek($input);
-        }
+        $schedules = $this->scheduleFilter($input);
 
-        abort(404);
+        $schedulesTotal = $schedules->count();
+
+        $schedulesList = $schedules
+            ->offset($page)
+            ->limit(self::SCHEDULES_DEFAULT_LIMIT)
+            ->get();
+
+        $schedulesReatabilities = $this->getRepeatabilities($schedulesList, $input['date_start'], $input['date_end']);
+
+        $schedulesList->load('department')
+            ->load('schedule_setting')
+            ->load('subject')
+            ->load('group')
+            ->load('teacher')
+            ->load('building')
+            ->load('building_classroom');
+
+        return [
+            'total' => $schedulesTotal,
+            'count' => count($schedulesList),
+            'page' => (int) $input['page'] ?? 0,
+            'data' => $schedulesList, 
+            'included' =>  [
+                'repeatabilities' => $schedulesReatabilities
+            ]
+        ];
     }
 
-    private function getByDate(array $input)
+    private function scheduleFilter(array $input)
     {
-        $selectDate = strtotime($input['date']);
-        $day = date('N', $selectDate);
-        $date = date('Y-m-d', $selectDate);
-        
-        $schedules = Schedule::where('account_id', $this->accountService->getId())
-                ->where('repeat_start', '<=', $date)
-                ->where('repeat_end', '>=', $date)
-                ->where('day_of_week', $day)
-                ->orderBy('schedule_setting_item_order', 'asc')
-                ->with('department')
-                ->with('schedule_setting')
-                ->with('subject')
-                ->with('group')
-                ->with('teacher')
-                ->with('building')
-                ->with('building_classroom');
+        $dateStart = date('Y-m-d', strtotime($input['date_start']));
+        $dateEnd = date('Y-m-d', strtotime($input['date_end']));
 
-        $week = date('W', $selectDate);
-        if ($week % 2 === 0) {
-            $schedules->where('repeatability', '!=', Schedule::REPEATABILITIES['ODD']);
-        } else {
-            $schedules->where('repeatability', '!=', Schedule::REPEATABILITIES['EVEN']);
-        }
+        $filter = Schedule::where('account_id', $this->accountService->getId())
+            ->where('repeat_start', '<=', $dateEnd)
+            ->where('repeat_end', '>=', $dateStart)
+            ->orderBy('repeat_start', 'asc')
+            ->orderBy('day_of_week', 'asc')
+            ->orderBy('schedule_setting_item_order', 'asc');
 
         if (isset($input['group_id'])) {
-            $schedules->where('group_id', $input['group_id']);
+            $filter->where('group_id', $input['group_id']);
         }
-
+    
         if (isset($input['teacher_id'])) {
-            $schedules->where('teacher_id', $input['teacher_id']);
+            $filter->where('teacher_id', $input['teacher_id']);
         }
-
+    
         if (isset($input['building_id']) && !isset($input['building_classroom_id'])) {
-            $schedules->where('building_id', $input['building_id']);
+            $filter->where('building_id', $input['building_id']);
         }
-
+    
         if (isset($input['building_classroom_id'])) {
-            $schedules->where('building_classroom_id', $input['building_classroom_id']);
+            $filter->where('building_classroom_id', $input['building_classroom_id']);
         }
 
-        $schedules = $schedules->get();
-
-        foreach ($schedules as $schedule) {
-            $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
-        }
-
-        return $schedules;
+        return $filter;
     }
 
-
-    private function getByWeek(array $input)
+    private function getRepeatabilities($schedulesList, string $dateStart, string $dateEnd): array
     {
-        if ($input['week'] == self::WEEK_NEXT) {
-            $week_start = date('Y-m-d', strtotime('Next monday'));
-            $week_end = date('Y-m-d', strtotime('Next monday +7 days'));
-        } else {
-            $week_start = date('Y-m-d', strtotime('Monday this week'));
-            $week_end = date('Y-m-d', strtotime('Monday this week +7 days'));
+        $dateStart = date('Y-m-d', strtotime($dateStart));
+        $dateEnd = date('Y-m-d', strtotime($dateEnd));
+        $result = Array();
+
+        foreach ($schedulesList as $schedule) {
+            $interval = $this->getInterval($schedule->repeatability);
+            $currentDay = date('Y-m-d', strtotime($dateStart . ' last Sunday +' . $schedule->day_of_week . ' days'));
+            while ($currentDay > $dateStart && $currentDay < $dateEnd) {
+                if ($this->forThisWeek($currentDay, $schedule->repeatability)) {
+                    $result[] = new ScheduleRepeatability(
+                        $schedule->id,
+                        $currentDay
+                    );
+                    if ($interval == null) {
+                        break;
+                    }
+                }
+                $currentDay = date('Y-m-d', strtotime($currentDay . $interval));
+            }
         }
 
-        $period = new DatePeriod(
-            new DateTime($week_start),
-            new DateInterval('P1D'),
-            new DateTime($week_end)
-        );
-        
-        $dates = array();
-        foreach ($period as $date) {
-            $day = (string) $date->format('Y-m-d');
-            $input['date'] = $day;
-            $schedules = $this->getByDate($input)->toArray();
-            $dates[$day] = !empty($schedules) ? $schedules : null;
+        return $result;
+    }
+
+    private function getInterval(int $repeatability): ?string
+    {
+        switch ($repeatability) {
+            case Schedule::REPEATABILITIES['EVERY']:
+                $interval = ' + 1 week';
+                break;
+            case Schedule::REPEATABILITIES['EVEN']:
+            case Schedule::REPEATABILITIES['ODD']:
+                $interval = ' + 2 weeks';
+                break;
+            default:
+                $interval = null;
         }
-        
-        return $dates;
+
+        return $interval;
+    }
+
+    private function forThisWeek(string $date, int $repeatability): bool
+    {
+        $week = date('W', strtotime($date));
+        if (
+            ($week % 2 === 0 && $repeatability == Schedule::REPEATABILITIES['ODD']) || 
+            ($week % 2 !== 0 && $repeatability == Schedule::REPEATABILITIES['EVEN'])
+        ) {
+            return false;
+        }
+        return true;
     }
 }

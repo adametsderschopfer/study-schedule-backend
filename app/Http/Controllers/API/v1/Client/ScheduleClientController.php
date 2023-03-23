@@ -5,10 +5,9 @@ namespace App\Http\Controllers\API\v1\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AccountService;
-use App\Models\Schedule;
-use App\Http\Requests\ScheduleFormRequest;
 use App\Http\Requests\ScheduleGetRequest;
 use App\Http\Actions\v1\ScheduleAction;
+use DateTime;
 
 class ScheduleClientController extends Controller
 {
@@ -22,27 +21,24 @@ class ScheduleClientController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/schedules?week={week}&date={date}&teacher_id={teacherId}&group_id={groupId}",
+     * path="/api/v1/client/schedules?date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
      *   tags={"Schedules Client"},
      *   summary="Получение списка расписаний",
      *   operationId="get_client_schedules",
      * 
      *   @OA\Parameter(
-     *      name="week",
+     *      name="dateStart",
      *      in="path",
-     *      required=false, 
-     *      description="Required if not set date parameter. Values: [ current | next ].",
+     *      required=true, 
      *      @OA\Schema(
-     *           type="string",
-     *           default="current"
+     *           type="string"
      *      )
      *   ),
      * 
      *   @OA\Parameter(
-     *      name="date",
+     *      name="dateEnd",
      *      in="path",
-     *      required=false, 
-     *      description="Required if not set week parameter. Format: Y-m-d",
+     *      required=true, 
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -63,6 +59,24 @@ class ScheduleClientController extends Controller
      *      required=false, 
      *      @OA\Schema(
      *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingClassroomId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="string"
      *      )
      *   ),
      * 

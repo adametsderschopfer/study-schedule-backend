@@ -11,16 +11,28 @@ use App\Http\Requests\DepartmentFormRequest;
 
 class DepartmentController extends Controller
 {
+    private const DEPARTMENTS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/departments?faculty_id={facultyId}",
+     * path="/api/v1/admin/departments?page={page}&faculty_id={facultyId}",
      *   tags={"Departments"},
      *   summary="Получение списка кафедр",
      *   operationId="get_departments",
+     *   
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Parameter(
      *      name="facultyId",
@@ -54,10 +66,13 @@ class DepartmentController extends Controller
             abort(404);
         }
 
-        return $faculty->departments
-            ->load('subjects')
-            ->load('groups')
-            ->load('teachers');
+        $departments = Department::where('faculty_id', $faculty->id)
+                ->with('subjects')
+                ->with('groups')
+                ->with('teachers')
+                ->paginate(self::DEPARTMENTS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($departments);
     }
 
      /**

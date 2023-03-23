@@ -10,16 +10,28 @@ use App\Http\Requests\FacultyFormRequest;
 
 class FacultyController extends Controller
 {
+    private const FACULTIES_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/faculties",
+     * path="/api/v1/admin/faculties?page={page}",
      *   tags={"Faculties"},
      *   summary="Получение списка факультетов",
      *   operationId="get_faculties",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -34,12 +46,21 @@ class FacultyController extends Controller
      */
     protected function index()
     {
-        return Faculty::where('account_id', $this->accountService->getId())
-                ->with('departments')
+        $faculties = Faculty::where('account_id', $this->accountService->getId())
+                ->with(['departments' => function($q)
+                    {
+                        $q->with('groups');
+                        $q->with('teachers');
+                        $q->with('subjects');
+                    }
+                ])
                 ->with('subjects')
                 ->with('groups')
                 ->with('teachers')
-                ->get();
+                ->paginate(self::FACULTIES_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($faculties);
+
     }
 
      /**

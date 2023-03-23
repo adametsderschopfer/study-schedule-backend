@@ -10,16 +10,28 @@ use App\Models\Account;
 
 class FacultyClientController extends Controller
 {
+    private const FACULTIES_CLIENT_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/faculties",
+     * path="/api/v1/client/faculties?page={page}",
      *   tags={"Faculties Client"},
      *   summary="Получение списка факультетов",
      *   operationId="get_client_faculties",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -35,13 +47,18 @@ class FacultyClientController extends Controller
     protected function index()
     {
         $faculties = Faculty::where('account_id', $this->accountService->getId())
-            ->with(['departments' => function($q)
-                {
-                    $q->with('groups');
-                }
-            ])
-            ->with('groups');
-            
-        return $faculties->get();
+                ->with(['departments' => function($q)
+                    {
+                        $q->with('groups');
+                        $q->with('teachers');
+                        $q->with('subjects');
+                    }
+                ])
+                ->with('subjects')
+                ->with('groups')
+                ->with('teachers')
+                ->paginate(self::FACULTIES_CLIENT_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($faculties);
     }
 }

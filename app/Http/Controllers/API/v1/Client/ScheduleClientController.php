@@ -21,7 +21,7 @@ class ScheduleClientController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/schedules?page={page}&date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
+     * path="/api/v1/client/schedules?page={page}&date_start={dateStart}&date_end={dateEnd}",
      *   tags={"Schedules Client"},
      *   summary="Получение списка расписаний",
      *   operationId="get_client_schedules",
@@ -29,8 +29,7 @@ class ScheduleClientController extends Controller
      *   @OA\Parameter(
      *      name="page",
      *      in="path",
-     *      required=false, 
-     *      default=1,
+     *      required=false,
      *      @OA\Schema(
      *           type="int"
      *      )
@@ -49,42 +48,6 @@ class ScheduleClientController extends Controller
      *      name="dateEnd",
      *      in="path",
      *      required=true, 
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     * 
-     *   @OA\Parameter(
-     *      name="teacherId",
-     *      in="path",
-     *      required=false, 
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     * 
-     *   @OA\Parameter(
-     *      name="groupId",
-     *      in="path",
-     *      required=false, 
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     * 
-     *   @OA\Parameter(
-     *      name="buildingId",
-     *      in="path",
-     *      required=false, 
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     * 
-     *   @OA\Parameter(
-     *      name="buildingClassroomId",
-     *      in="path",
-     *      required=false, 
      *      @OA\Schema(
      *           type="string"
      *      )

@@ -40,8 +40,7 @@ class SubjectController extends Controller
      *   @OA\Parameter(
      *      name="page",
      *      in="path",
-     *      required=false, 
-     *      default=1,
+     *      required=false,
      *      @OA\Schema(
      *           type="int"
      *      )

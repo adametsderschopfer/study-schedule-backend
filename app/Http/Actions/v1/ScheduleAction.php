@@ -17,34 +17,23 @@ class ScheduleAction
         $this->accountService = $accountService;
     }
 
-    public function get(array $input) {
-        $page = (int) $input['page']*self::SCHEDULES_DEFAULT_LIMIT ?? 0;
-
+    public function get(array $input) 
+    {
         $schedules = $this->scheduleFilter($input);
+        $schedules = $schedules->with('department')
+                ->with('schedule_setting')
+                ->with('subject')
+                ->with('group')
+                ->with('teacher')
+                ->with('building')
+                ->with('building_classroom')
+                ->paginate(self::SCHEDULES_DEFAULT_LIMIT);
 
-        $schedulesTotal = $schedules->count();
-
-        $schedulesList = $schedules
-            ->offset($page)
-            ->limit(self::SCHEDULES_DEFAULT_LIMIT)
-            ->get();
-
-        $schedulesReatabilities = $this->getRepeatabilities($schedulesList, $input['date_start'], $input['date_end']);
-
-        $schedulesList->load('department')
-            ->load('schedule_setting')
-            ->load('subject')
-            ->load('group')
-            ->load('teacher')
-            ->load('building')
-            ->load('building_classroom');
+        $schedulesReatabilities = $this->getRepeatabilities($schedules->toArray()['data'], $input['date_start'], $input['date_end']);
 
         return [
-            'total' => $schedulesTotal,
-            'count' => count($schedulesList),
-            'page' => (int) $input['page'] ?? 0,
-            'data' => $schedulesList, 
-            'included' =>  [
+            'data' => $schedules, 
+            'includes' => [
                 'repeatabilities' => $schedulesReatabilities
             ]
         ];
@@ -88,12 +77,12 @@ class ScheduleAction
         $result = Array();
 
         foreach ($schedulesList as $schedule) {
-            $interval = $this->getInterval($schedule->repeatability);
-            $currentDay = date('Y-m-d', strtotime($dateStart . ' last Sunday +' . $schedule->day_of_week . ' days'));
+            $interval = $this->getInterval($schedule['repeatability']);
+            $currentDay = date('Y-m-d', strtotime($dateStart . ' last Sunday +' . $schedule['day_of_week'] . ' days'));
             while ($currentDay > $dateStart && $currentDay < $dateEnd) {
-                if ($this->forThisWeek($currentDay, $schedule->repeatability)) {
+                if ($this->forThisWeek($currentDay, $schedule['repeatability'])) {
                     $result[] = new ScheduleRepeatability(
-                        $schedule->id,
+                        $schedule['id'],
                         $currentDay
                     );
                     if ($interval == null) {

@@ -21,10 +21,20 @@ class ScheduleClientController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/schedules?date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
+     * path="/api/v1/client/schedules?page={page}&date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
      *   tags={"Schedules Client"},
      *   summary="Получение списка расписаний",
      *   operationId="get_client_schedules",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Parameter(
      *      name="dateStart",
@@ -95,6 +105,8 @@ class ScheduleClientController extends Controller
     {
         $input = $request->validated();
 
-        return $this->scheduleAction->get($input);
+        $schedulesData = $this->scheduleAction->get($input);
+
+        return $this->sendPaginationResponse($schedulesData['data'], $schedulesData['includes']);
     }
 }

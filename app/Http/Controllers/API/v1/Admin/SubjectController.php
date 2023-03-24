@@ -13,6 +13,8 @@ use App\Http\Requests\SubjectFormRequest;
 
 class SubjectController extends Controller
 {
+    private const SUBJECTS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
 
@@ -30,10 +32,20 @@ class SubjectController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/subjects?parent_id={parentId}",
+     * path="/api/v1/admin/subjects?page={page}&parent_id={parentId}",
      *   tags={"Subjects"},
      *   summary="Получение списка предметов",
      *   operationId="get_subjects",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Parameter(
      *      name="parentId",
@@ -68,7 +80,10 @@ class SubjectController extends Controller
             $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        return $parent->subjects;
+        $subjects = $parent->subjects()
+                ->paginate(self::SUBJECTS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($subjects);
     }
 
      /**

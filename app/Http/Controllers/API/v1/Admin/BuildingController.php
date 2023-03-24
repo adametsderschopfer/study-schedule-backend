@@ -10,16 +10,28 @@ use App\Http\Requests\BuildingFormRequest;
 
 class BuildingController extends Controller
 {
+    private const BUILDINGS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/buildings",
+     * path="/api/v1/admin/buildings?page={page}",
      *   tags={"Buildings"},
      *   summary="Получение списка корпусов",
      *   operationId="get_buildings",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -34,9 +46,11 @@ class BuildingController extends Controller
      */
     protected function index()
     {
-        return Building::where('account_id', $this->accountService->getId())
+        $buildings = Building::where('account_id', $this->accountService->getId())
                 ->with('building_classrooms')
-                ->get();
+                ->paginate(self::BUILDINGS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($buildings);
     }
 
      /**

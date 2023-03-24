@@ -13,6 +13,8 @@ use App\Http\Requests\GroupFormRequest;
 
 class GroupController extends Controller
 {
+    private const GROUPS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
 
@@ -30,10 +32,20 @@ class GroupController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/groups?parent_id={parentId}",
+     * path="/api/v1/admin/groups?page={page}&parent_id={parentId}",
      *   tags={"Groups"},
      *   summary="Получение списка групп",
      *   operationId="get_groups",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Parameter(
      *      name="parentId",
@@ -68,7 +80,10 @@ class GroupController extends Controller
             $parent = Account::findOrFail($this->accountService->getId());
         }
 
-        return $parent->groups;
+        $groups = $parent->groups()
+                ->paginate(self::GROUPS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($groups);
     }
 
      /**

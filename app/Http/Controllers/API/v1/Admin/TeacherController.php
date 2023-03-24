@@ -13,6 +13,8 @@ use App\Http\Requests\TeacherFormRequest;
 
 class TeacherController extends Controller
 {
+    private const TEACHERS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
 
@@ -33,10 +35,20 @@ class TeacherController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/teachers?parent_id={parentId}",
+     * path="/api/v1/admin/teachers?page={page}&parent_id={parentId}",
      *   tags={"Teachers"},
      *   summary="Получение списка преподавателей",
      *   operationId="get_teachers",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Parameter(
      *      name="parentId",
@@ -72,7 +84,10 @@ class TeacherController extends Controller
             abort(404);
         }
 
-        return $parent->teachers;
+        $teachers = $parent->teachers()
+                ->paginate(self::TEACHERS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($teachers);
     }
 
      /**

@@ -10,16 +10,28 @@ use App\Http\Requests\ScheduleSettingFormRequest;
 
 class ScheduleSettingController extends Controller
 {
+    private const SCHEDULE_SETTINGS_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
     }
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/schedule_settings",
+     * path="/api/v1/admin/schedule_settings?page={page}",
      *   tags={"Schedule settings"},
      *   summary="Получение списка режимов звонков",
      *   operationId="get_schedule_settings",
+     * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -34,9 +46,11 @@ class ScheduleSettingController extends Controller
      */
     protected function index()
     {
-        return ScheduleSetting::where('account_id', $this->accountService->getId())
+        $scheduleSettings = ScheduleSetting::where('account_id', $this->accountService->getId())
                 ->with('schedule_setting_items')
-                ->get();
+                ->paginate(self::SCHEDULE_SETTINGS_DEFAULT_LIMIT);
+
+        return $this->sendPaginationResponse($scheduleSettings);
     }
 
      /**

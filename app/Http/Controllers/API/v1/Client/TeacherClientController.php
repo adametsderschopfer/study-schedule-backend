@@ -12,6 +12,8 @@ use App\Models\Teacher;
 
 class TeacherClientController extends Controller
 {
+    private const TEACHERS_CLIENT_DEFAULT_LIMIT = 30;
+
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
 
@@ -32,11 +34,20 @@ class TeacherClientController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/client/teachers",
+     * path="/api/v1/client/teachers?page="{page}",
      *   tags={"Teachers Client"},
      *   summary="Получение списка преподавателей",
      *   operationId="get_client_teachers",
      * 
+     *   @OA\Parameter(
+     *      name="page",
+     *      in="path",
+     *      required=false, 
+     *      default=1,
+     *      @OA\Schema(
+     *           type="int"
+     *      )
+     *   ),
      * 
      *   @OA\Response(
      *      response=200,
@@ -52,13 +63,8 @@ class TeacherClientController extends Controller
     protected function index()
     {
         $teachers = Teacher::where('account_id', $this->accountService->getId())
-            ->get();
+                ->paginate(self::TEACHERS_CLIENT_DEFAULT_LIMIT);
 
-        foreach ($teachers as $teacher) {
-            $teacher['groups'] = $teacher->getGroups();
-            unset($teacher['schedules']);
-        }
-
-        return $teachers;
+        return $this->sendPaginationResponse($teachers);
     }
 }

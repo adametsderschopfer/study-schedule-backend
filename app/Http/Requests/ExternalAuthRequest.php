@@ -39,13 +39,13 @@ class ExternalAuthRequest
             return false;
         }
             
-            // Log::channel('external_auth')->error($response);
+        Log::channel('external_auth')->error($response);
                     
-            // if (!$response->successful()) {
-            //     Log::channel('external_auth')->error('safasf');
-            //     session()->flush();
-            //     return false;
-            // }
+        if (!$response->successful()) {
+            Log::channel('external_auth')->error($response);
+            session()->flush();
+            return false;
+        }
 
         $accountInfo = $response->json();
 

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Http;
 use App\DTO\ExternalAccount;
 use App\Services\AccountService;
 use App\Models\Account;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 class ExternalAuthRequest
 {
@@ -28,21 +26,12 @@ class ExternalAuthRequest
             return false;
         }
 
-        try {
-            $response = Http::withHeaders([
-                    self::TOKEN_KEY => $headers[self::TOKEN_KEY]
-                ])
-                ->get($this->auth_url);
-        } catch (Exception $e) {
-            Log::channel('external_auth')->error($e->getMessage());
-            session()->flush();
-            return false;
-        }
-            
-        Log::channel('external_auth')->error($response);
+        $response = Http::withHeaders([
+                self::TOKEN_KEY => $headers[self::TOKEN_KEY]
+            ])
+            ->get($this->auth_url);
                     
         if (!$response->successful()) {
-            Log::channel('external_auth')->error($response);
             session()->flush();
             return false;
         }

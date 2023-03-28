@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\Admin;
+namespace App\Http\Controllers\API\v1\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Services\AccountService;
 
-class AccountController extends Controller
+class AccountClientController extends Controller
 {
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
@@ -14,7 +14,7 @@ class AccountController extends Controller
 
      /**
      * @OA\Get(
-     * path="/api/v1/admin/me",
+     * path="/api/v1/client/me",
      *   tags={"Account"},
      *   summary="Получение информации об аккаунте",
      *   operationId="get_account",

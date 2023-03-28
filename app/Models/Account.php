@@ -35,8 +35,7 @@ class Account extends Model
     protected $hidden = [
         'id',
         'external_id',
-        'deleted_at',
-        'type'
+        'deleted_at'
     ];
 
     protected $casts = [

@@ -84,6 +84,7 @@ class TeacherController extends Controller
         }
 
         $teachers = $parent->teachers()
+                ->with('groups')
                 ->paginate(self::TEACHERS_DEFAULT_LIMIT);
 
         return $this->sendPaginationResponse($teachers);
@@ -118,7 +119,7 @@ class TeacherController extends Controller
      */
     protected function show(Teacher $teacher)
     {
-        return $teacher;
+        return $teacher->with('groups');
     }
 
      /**
@@ -227,7 +228,7 @@ class TeacherController extends Controller
 
         $parent->teachers()->save($teacher);
 
-        return $teacher;
+        return $teacher->load('groups');
     }
 
      /**
@@ -312,7 +313,7 @@ class TeacherController extends Controller
         $teacher->departments()->detach();
 
         if ($parent->teachers()->save($teacher)) {
-            return $teacher;
+            return $teacher->load('groups');
         }
 
         return $this->sendError(__('Server error'));

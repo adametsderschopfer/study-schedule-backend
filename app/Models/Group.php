@@ -13,6 +13,7 @@ class Group extends Model
 
     protected $fillable = [
         'account_id', 
+        'teacher_id', 
         'letter', 
         'sub_group',
         'degree',
@@ -30,6 +31,11 @@ class Group extends Model
     ];
 
     protected $casts = [
+        'teacher_id' => 'integer',
+        'sub_group' => 'integer',
+        'degree' => 'integer',
+        'year_of_education' => 'integer',
+        'form_of_education' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -43,6 +49,11 @@ class Group extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
     }
 
     public function faculties()

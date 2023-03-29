@@ -36,6 +36,7 @@ class GroupFormRequest extends FormRequest
             'degree' => ['sometimes', 'integer'],
             'year_of_education' => ['sometimes', 'integer'],
             'form_of_education' => ['sometimes', 'integer'],
+            'teacher_id' => ['sometimes', 'integer', 'exists:App\Models\Teacher,id'],
             'parent_id' => Rule::requiredIf($this->accountService->getType() !== Account::TYPES['SCHOOL']),
         ];
     }

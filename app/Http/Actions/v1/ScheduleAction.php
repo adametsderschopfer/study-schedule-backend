@@ -29,6 +29,10 @@ class ScheduleAction
                 ->with('building_classroom')
                 ->paginate(self::SCHEDULES_DEFAULT_LIMIT);
 
+        foreach ($schedules as $schedule) {
+            $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
+        }
+
         $schedulesReatabilities = $this->getRepeatabilities($schedules->toArray()['data'], $input['date_start'], $input['date_end']);
 
         return [

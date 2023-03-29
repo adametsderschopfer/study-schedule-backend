@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Group;
+use App\Models\Teacher;
 use App\Http\Requests\GroupFormRequest;
 
 class GroupController extends Controller
@@ -80,6 +81,7 @@ class GroupController extends Controller
         }
 
         $groups = $parent->groups()
+                ->with('teacher')
                 ->paginate(self::GROUPS_DEFAULT_LIMIT);
 
         return $this->sendPaginationResponse($groups);
@@ -112,9 +114,9 @@ class GroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    protected function show(group $group)
+    protected function show(Group $group)
     {
-        return $group;
+        return $group->load('teacher');
     }
 
      /**
@@ -161,6 +163,15 @@ class GroupController extends Controller
      *          name="parent_id",
      *          in="query",
      *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="teacher_id",
+     *          in="query",
+     *          required=false,
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -244,6 +255,13 @@ class GroupController extends Controller
             $parent = Account::findOrFail($this->accountService->getId());
         }
 
+        if (isset($input['teacher_id'])) {
+            $teacher = Teacher::findOrFail($input['teacher_id']);
+            if (!$teacher->hasAccount($this->accountService->getId()) || $this->groupable !== false) {
+                unset($input['teacher_id']);
+            }
+        }
+
         $group = new Group;
         $group->name = $input['name'];
         $group->letter = $input['letter'] ?? null;
@@ -251,11 +269,12 @@ class GroupController extends Controller
         $group->degree = $input['degree'] ?? 0;
         $group->year_of_education = $input['year_of_education'] ?? 0;
         $group->form_of_education = $input['form_of_education'] ?? 0;
+        $group->teacher_id = $input['teacher_id'] ?? null;
         $group->account_id = $this->accountService->getId();
 
         $parent->groups()->save($group);
 
-        return $group;
+        return $group->load('teacher');
     }
 
      /**
@@ -276,6 +295,15 @@ class GroupController extends Controller
      * 
      *      @OA\Parameter(
      *          name="parent_id",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * 
+     *      @OA\Parameter(
+     *          name="teacher_id",
      *          in="query",
      *          required=true,
      *          @OA\Schema(
@@ -361,18 +389,26 @@ class GroupController extends Controller
             $parent = Account::findOrFail($this->accountService->getId());
         }
 
+        if (isset($input['teacher_id'])) {
+            $teacher = Teacher::findOrFail($input['teacher_id']);
+            if (!$teacher->hasAccount($this->accountService->getId()) || $this->groupable !== false) {
+                unset($input['teacher_id']);
+            }
+        }
+
         $group->name = $input['name'];
         $group->letter = $input['letter'] ?? null;
         $group->sub_group = $input['sub_group'] ?? 0;
         $group->degree = $input['degree'] ?? 0;
         $group->year_of_education = $input['year_of_education'] ?? 0;
         $group->form_of_education = $input['form_of_education'] ?? 0;
+        $group->teacher_id = $input['teacher_id'] ?? null;
 
         $group->faculties()->detach();
         $group->departments()->detach();
 
         if ($parent->groups()->save($group)) {
-            return $group;
+            return $group->load('teacher');
         }
 
         return $this->sendError(__('Server error'));

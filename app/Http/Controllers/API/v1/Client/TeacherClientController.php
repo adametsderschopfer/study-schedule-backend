@@ -62,6 +62,7 @@ class TeacherClientController extends Controller
     protected function index()
     {
         $teachers = Teacher::where('account_id', $this->accountService->getId())
+                ->with('groups')
                 ->paginate(self::TEACHERS_CLIENT_DEFAULT_LIMIT);
 
         return $this->sendPaginationResponse($teachers);

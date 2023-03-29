@@ -119,7 +119,7 @@ class TeacherController extends Controller
      */
     protected function show(Teacher $teacher)
     {
-        return $teacher->with('grops');
+        return $teacher->with('groups');
     }
 
      /**

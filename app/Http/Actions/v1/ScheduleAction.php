@@ -83,8 +83,8 @@ class ScheduleAction
         foreach ($schedulesList as $schedule) {
             $interval = $this->getInterval($schedule['repeatability']);
             $currentDay = date('Y-m-d', strtotime($dateStart . ' last Sunday +' . $schedule['day_of_week'] . ' days'));
-            while ($currentDay > $dateStart && $currentDay < $dateEnd) {
-                if ($this->forThisWeek($currentDay, $schedule['repeatability'])) {
+            while ($currentDay <= $dateEnd) {
+                if ($currentDay >= $dateStart && $this->forThisWeek($currentDay, $schedule['repeatability'])) {
                     $result[] = new ScheduleRepeatability(
                         $schedule['id'],
                         $currentDay

@@ -50,7 +50,7 @@ class GroupController extends Controller
      *   @OA\Parameter(
      *      name="parentId",
      *      in="path",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="integer"
      *      )

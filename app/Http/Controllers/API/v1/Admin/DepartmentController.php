@@ -36,7 +36,7 @@ class DepartmentController extends Controller
      *   @OA\Parameter(
      *      name="facultyId",
      *      in="path",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="integer"
      *      )
@@ -55,17 +55,19 @@ class DepartmentController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('faculty_id');
+        $input = $request->all();
 
-        $input['account_id'] = $this->accountService->getId();
-
-        $faculty = Faculty::findOrFail($input['faculty_id']);
-
-        if (!$faculty->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['faculty_id'])) {
+            $faculty = Faculty::findOrFail($input['faculty_id']);
+            if (!$faculty->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+            $faculties[] = $faculty->id;
+        } else {
+            $faculties = Faculty::select('id')->where('account_id', $this->accountService->getId());
         }
-
-        $departments = Department::where('faculty_id', $faculty->id)
+        
+        $departments = Department::whereIn('faculty_id', $faculties)
                 ->with('subjects')
                 ->with('groups')
                 ->with('teachers')

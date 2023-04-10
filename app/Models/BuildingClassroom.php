@@ -44,6 +44,11 @@ class BuildingClassroom extends Model
         return $this->belongsTo(Building::class);
     }
 
+    public function schedule()
+    {
+        return $this->hasOne(Schedule::class);
+    }
+
     public function hasAccount(int $account_id): bool
     {
         if ($this->account->id == $account_id) {

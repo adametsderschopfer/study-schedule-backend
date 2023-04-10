@@ -73,6 +73,9 @@ class Building extends Model
             if ($key === false) {
                 $buildingClassroom = BuildingClassroom::find($value);
                 if ($buildingClassroom) {
+                    $schedule = $buildingClassroom->schedule;
+                    $schedule->building_classroom_id = null;
+                    $schedule->save();
                     $buildingClassroom->delete();
                 }
             }

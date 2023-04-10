@@ -50,7 +50,7 @@ class GroupController extends Controller
      *   @OA\Parameter(
      *      name="parentId",
      *      in="path",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="integer"
      *      )
@@ -69,9 +69,9 @@ class GroupController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('parent_id');
+        $input = $request->all();
 
-        if (isset($input['parent_id']) && $this->groupable !== false) {
+        if (isset($input['parent_id'])) {
             $parent = $this->groupable::findOrFail($input['parent_id']);
             if (!$parent->hasAccount($this->accountService->getId())) {
                 abort(404);

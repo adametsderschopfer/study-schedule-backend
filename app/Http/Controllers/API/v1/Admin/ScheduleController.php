@@ -9,9 +9,15 @@ use App\Models\Schedule;
 use App\Http\Requests\ScheduleFormRequest;
 use App\Http\Requests\ScheduleGetRequest;
 use App\Http\Actions\v1\ScheduleAction;
+use App\Exports\SchedulesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ScheduleController extends Controller
 {
+    private const EXPORT_FILENAME_PREFIX = 'schedules_';
+
+    private const EXPORT_FILENAME_FORMAT = 'xlsx';
+
     public function __construct(
         AccountService $accountService, 
         ScheduleAction $scheduleAction
@@ -540,5 +546,29 @@ class ScheduleController extends Controller
         }
 
         return $this->sendError(__('Server error'));
+    }
+
+    public function export(ScheduleGetRequest $request) 
+    {
+        $filename = self::EXPORT_FILENAME_PREFIX . time() . '.' . self::EXPORT_FILENAME_FORMAT;
+
+        $input = $request->validated();
+
+        $schedulesData = [];
+        $schedulesRepeatabilities = [];
+        $input['page'] = 1;
+        $schedulesQuery = $this->scheduleAction->getForExport($input);
+
+        while (!empty($schedulesQuery['data'])) {
+            array_push($schedulesData, $schedulesQuery['data']);
+            array_push($schedulesRepeatabilities, $schedulesQuery['includes']['repeatabilities']);
+            $input['page'] ++;
+            $schedulesQuery = $this->scheduleAction->getForExport($input);
+        }
+
+        $schedulesData = collect($schedulesData)->collapse();
+        $schedulesRepeatabilities = collect($schedulesRepeatabilities)->collapse();
+
+        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename);
     }
 }

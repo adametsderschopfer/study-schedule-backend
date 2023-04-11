@@ -17,7 +17,7 @@ class ScheduleAction
         $this->accountService = $accountService;
     }
 
-    public function get(array $input) 
+    public function get(array $input, bool $export = false) 
     {
         $schedules = $this->scheduleFilter($input);
         $schedules = $schedules->with('department')
@@ -26,8 +26,17 @@ class ScheduleAction
                 ->with('group')
                 ->with('teacher')
                 ->with('building')
-                ->with('building_classroom')
-                ->paginate(self::SCHEDULES_DEFAULT_LIMIT);
+                ->with('building_classroom');
+
+        if ($export) {
+            $schedules = $schedules
+                ->offset(($input['page'] - 1) * self::SCHEDULES_DEFAULT_LIMIT)
+                ->limit(self::SCHEDULES_DEFAULT_LIMIT)
+                ->get();
+            $schedules['data'] = $schedules;
+        } else {
+            $schedules = $schedules->paginate(self::SCHEDULES_DEFAULT_LIMIT);
+        }
 
         foreach ($schedules as $schedule) {
             $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
@@ -127,5 +136,36 @@ class ScheduleAction
             return false;
         }
         return true;
+    }
+
+    public function getForExport(array $input) 
+    {
+        $schedules = $this->scheduleFilter($input);
+        $schedules = $schedules->with('department', function($q)
+                {
+                    $q->with('faculty');
+                })
+                ->with('schedule_setting')
+                ->with('subject')
+                ->with('group')
+                ->with('teacher')
+                ->with('building')
+                ->with('building_classroom')
+                ->offset((1*$input['page']-1) * self::SCHEDULES_DEFAULT_LIMIT)
+                ->limit(self::SCHEDULES_DEFAULT_LIMIT)
+                ->get();
+        
+        foreach ($schedules as $schedule) {
+            $schedule['schedule_setting_item'] = $schedule->schedule_setting_item();
+        }
+
+        $schedulesReatabilities = $this->getRepeatabilities($schedules->toArray(), $input['date_start'], $input['date_end']);
+
+        return [
+            'data' => $schedules->toArray(), 
+            'includes' => [
+                'repeatabilities' => $schedulesReatabilities
+            ]
+        ];
     }
 }

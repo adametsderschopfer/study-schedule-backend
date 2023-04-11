@@ -20,7 +20,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     private const UNIVERSITY_HEADINGS = [
         'Дата',
-        'Номер', 
         'Время',
         'Расписание',
         'Корпус', 
@@ -34,7 +33,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     private const COLLEGE_HEADINGS = [
         'Дата',
-        'Номер', 
         'Время',
         'Расписание',
         'Аудитория',
@@ -46,7 +44,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     private const SCHOOL_HEADINGS = [
         'Дата',
-        'Номер', 
         'Время',
         'Расписание',
         'Кабинет',
@@ -111,7 +108,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         if ($this->accountService->getType() == Account::TYPES['COLLEGE']) {
             return [
                 $schedule['date'] ? $schedule['date'] : '',
-                $schedule['schedule_setting_item_order'] ? (int) $schedule['schedule_setting_item_order'] + 1 : 1,
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
@@ -125,7 +121,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         if ($this->accountService->getType() == Account::TYPES['SCHOOL']) {
             return [
                 $schedule['date'] ? $schedule['date'] : '',
-                $schedule['schedule_setting_item_order'] ? (int) $schedule['schedule_setting_item_order'] + 1 : 1,
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
@@ -137,7 +132,6 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
         return [
             $schedule['date'] ? $schedule['date'] : '',
-            $schedule['schedule_setting_item_order'] ? (int) $schedule['schedule_setting_item_order'] + 1 : 1,
             $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
             $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
             $schedule['building_id'] ? $schedule['building']['name'] : '',

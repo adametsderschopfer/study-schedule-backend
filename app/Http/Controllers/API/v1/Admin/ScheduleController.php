@@ -16,7 +16,7 @@ class ScheduleController extends Controller
 {
     private const EXPORT_FILENAME_PREFIX = 'schedules_';
 
-    private const EXPORT_FILENAME_FORMAT = 'xlsx';
+    private const EXPORT_FILENAME_FORMAT = 'csv';
 
     public function __construct(
         AccountService $accountService, 
@@ -548,6 +548,78 @@ class ScheduleController extends Controller
         return $this->sendError(__('Server error'));
     }
 
+     /**
+     * @OA\Get(
+     * path="/api/v1/admin/schedules_export?date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
+     *   tags={"Schedules"},
+     *   summary="Экспорт списка расписаний в CSV",
+     *   operationId="export_schedules",
+     * 
+     *   @OA\Parameter(
+     *      name="dateStart",
+     *      in="path",
+     *      required=true, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="dateEnd",
+     *      in="path",
+     *      required=true, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="teacherId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="groupId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingClassroomId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   )
+     *)
+     * @param Request $request
+     * @return bool
+     */
     public function export(ScheduleGetRequest $request) 
     {
         $filename = self::EXPORT_FILENAME_PREFIX . time() . '.' . self::EXPORT_FILENAME_FORMAT;
@@ -569,6 +641,6 @@ class ScheduleController extends Controller
         $schedulesData = collect($schedulesData)->collapse();
         $schedulesRepeatabilities = collect($schedulesRepeatabilities)->collapse();
 
-        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename);
+        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 }

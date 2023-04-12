@@ -43,5 +43,6 @@ Route::prefix('v1')->group(function()
         Route::resource('subjects', SubjectController::class);
         Route::resource('groups', GroupController::class);
         Route::resource('buildings', BuildingController::class);
+        Route::get('schedules_export',[ScheduleController::class, 'export']);
     });
 });

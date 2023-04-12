@@ -9,9 +9,15 @@ use App\Models\Schedule;
 use App\Http\Requests\ScheduleFormRequest;
 use App\Http\Requests\ScheduleGetRequest;
 use App\Http\Actions\v1\ScheduleAction;
+use App\Exports\SchedulesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ScheduleController extends Controller
 {
+    private const EXPORT_FILENAME_PREFIX = 'schedules_';
+
+    private const EXPORT_FILENAME_FORMAT = 'xls';
+
     public function __construct(
         AccountService $accountService, 
         ScheduleAction $scheduleAction
@@ -540,5 +546,101 @@ class ScheduleController extends Controller
         }
 
         return $this->sendError(__('Server error'));
+    }
+
+     /**
+     * @OA\Get(
+     * path="/api/v1/admin/schedules_export?date_start={dateStart}&date_end={dateEnd}&teacher_id={teacherId}&group_id={groupId}&building_id={buildingId}&building_classroom_id={buildingClassroomId}",
+     *   tags={"Schedules"},
+     *   summary="Экспорт списка расписаний в CSV",
+     *   operationId="export_schedules",
+     * 
+     *   @OA\Parameter(
+     *      name="dateStart",
+     *      in="path",
+     *      required=true, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="dateEnd",
+     *      in="path",
+     *      required=true, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="teacherId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="groupId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     * 
+     *   @OA\Parameter(
+     *      name="buildingClassroomId",
+     *      in="path",
+     *      required=false, 
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   )
+     *)
+     * @param Request $request
+     * @return bool
+     */
+    public function export(ScheduleGetRequest $request) 
+    {
+        $filename = self::EXPORT_FILENAME_PREFIX . time() . '.' . self::EXPORT_FILENAME_FORMAT;
+
+        $input = $request->validated();
+
+        $schedulesData = [];
+        $schedulesRepeatabilities = [];
+        $input['page'] = 1;
+        $schedulesQuery = $this->scheduleAction->getForExport($input);
+
+        while (!empty($schedulesQuery['data'])) {
+            array_push($schedulesData, $schedulesQuery['data']);
+            array_push($schedulesRepeatabilities, $schedulesQuery['includes']['repeatabilities']);
+            $input['page'] ++;
+            $schedulesQuery = $this->scheduleAction->getForExport($input);
+        }
+
+        $schedulesData = collect($schedulesData)->collapse();
+        $schedulesRepeatabilities = collect($schedulesRepeatabilities)->collapse();
+
+        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename, \Maatwebsite\Excel\Excel::XLS);
     }
 }

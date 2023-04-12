@@ -16,7 +16,7 @@ class ScheduleController extends Controller
 {
     private const EXPORT_FILENAME_PREFIX = 'schedules_';
 
-    private const EXPORT_FILENAME_FORMAT = 'csv';
+    private const EXPORT_FILENAME_FORMAT = 'xls';
 
     public function __construct(
         AccountService $accountService, 
@@ -641,6 +641,6 @@ class ScheduleController extends Controller
         $schedulesData = collect($schedulesData)->collapse();
         $schedulesRepeatabilities = collect($schedulesRepeatabilities)->collapse();
 
-        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename, \Maatwebsite\Excel\Excel::CSV);
+        return Excel::download(new SchedulesExport($schedulesData, $schedulesRepeatabilities, $this->accountService), $filename, \Maatwebsite\Excel\Excel::XLS);
     }
 }

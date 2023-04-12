@@ -68,11 +68,40 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     public function registerEvents(): array
     {
+        $mergedRows = [];
+
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function(AfterSheet $event) use (&$mergedRows) {
                 $cellRange = 'A1:W1';
-                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14)->setBold(true);
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(12)->setBold(true);
+                // Начало части кода, созданного с помощью неросети
+                $schedules = $this->array();
+                $rowCount = count($schedules);
+    
+                for ($i = 0; $i < $rowCount; $i++) {
+                    if (isset($mergedRows[$i])) {
+                        continue;
+                    }
+    
+                    $currentDate = $schedules[$i][0];
+                    $startRow = $i + 2;
+                    $endRow = $i + 2;
+    
+                    for ($j = $i + 1; $j < $rowCount; $j++) {
+                        if ($schedules[$j][0] === $currentDate) {
+                            $endRow++;
+                            $mergedRows[$j] = true;
+                        } else {
+                            break;
+                        }
+                    }
+    
+                    if ($startRow !== $endRow) {
+                        $event->sheet->getDelegate()->mergeCells("A{$startRow}:A{$endRow}");
+                    }
+                }
             },
+            // Конец части кода, созданного с помощью неросети
         ];
     }
 
@@ -107,7 +136,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
     {
         if ($this->accountService->getType() == Account::TYPES['COLLEGE']) {
             return [
-                $schedule['date'] ? $schedule['date'] : '',
+                $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
@@ -120,7 +149,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
         if ($this->accountService->getType() == Account::TYPES['SCHOOL']) {
             return [
-                $schedule['date'] ? $schedule['date'] : '',
+                $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
@@ -131,7 +160,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         }
 
         return [
-            $schedule['date'] ? $schedule['date'] : '',
+            $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
             $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
             $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
             $schedule['building_id'] ? $schedule['building']['name'] : '',

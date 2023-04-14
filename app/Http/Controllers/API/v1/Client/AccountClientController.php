@@ -15,9 +15,9 @@ class AccountClientController extends Controller
      /**
      * @OA\Get(
      * path="/api/v1/client/me",
-     *   tags={"Account"},
+     *   tags={"Client Account"},
      *   summary="Получение информации об аккаунте",
-     *   operationId="get_account",
+     *   operationId="get_client_account",
      * 
      *   @OA\Response(
      *      response=200,

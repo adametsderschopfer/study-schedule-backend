@@ -1,5 +1,5 @@
 FROM php:8.2-cli
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git libpng-dev
 RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
       bcmath \
       ctype \
@@ -13,7 +13,14 @@ RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases
       pdo \
       tokenizer \
       xml \
-      pdo_mysql
+      pdo_mysql \
+      zip \
+      zlib \
+      xmlreader \
+      simplexml \
+      iconv \
+      gd
+
 RUN docker-php-ext-install pdo_mysql
 # USER 1000:1000
 WORKDIR /var/www

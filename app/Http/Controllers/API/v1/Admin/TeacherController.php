@@ -71,16 +71,15 @@ class TeacherController extends Controller
      */
     protected function index(Request $request)
     {
-        $input = $request->only('parent_id');
+        $input = $request->all();
 
-        if (!isset($input['parent_id'])) {
-            abort(404);
-        }
-
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
-
-        if (!$parent->hasAccount($this->accountService->getId())) {
-            abort(404);
+        if (isset($input['parent_id'])) {
+            $parent = $this->teacherable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
         }
 
         $teachers = $parent->teachers()

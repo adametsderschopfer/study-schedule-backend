@@ -138,12 +138,12 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
-                $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
-                $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
+                $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
+                $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
                 $schedule['department'] && $schedule['department']['faculty'] ? $schedule['department']['faculty']['name'] : '',
-                $schedule['subject_id'] ? $schedule['subject']['name'] : '',
-                $schedule['group_id'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
-                $schedule['teacher_id'] ? $schedule['teacher']['full_name'] : '',
+                $schedule['subject_id'] && $schedule['subject'] ? $schedule['subject']['name'] : '',
+                $schedule['group_id'] && $schedule['group'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
+                $schedule['teacher_id'] && $schedule['teacher'] ? $schedule['teacher']['full_name'] : '',
             ];
         }
 
@@ -151,25 +151,25 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
-                $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
-                $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
-                $schedule['subject_id'] ? $schedule['subject']['name'] : '',
-                $schedule['group_id'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
-                $schedule['teacher_id'] ? $schedule['teacher']['full_name'] : '',
+                $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
+                $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
+                $schedule['subject_id'] && $schedule['subject'] ? $schedule['subject']['name'] : '',
+                $schedule['group_id'] && $schedule['group'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
+                $schedule['teacher_id'] && $schedule['teacher'] ? $schedule['teacher']['full_name'] : '',
             ];
         }
 
         return [
             $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
             $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
-            $schedule['schedule_setting_id'] ? $schedule['schedule_setting']['name'] : '',
-            $schedule['building_id'] ? $schedule['building']['name'] : '',
-            $schedule['building_classroom_id'] ? $schedule['building_classroom']['name'] : '',
-            $schedule['department_id'] ? $schedule['department']['name'] : '',
+            $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
+            $schedule['building_id'] && $schedule['building'] ? $schedule['building']['name'] : '',
+            $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
+            $schedule['department_id'] && $schedule['department'] ? $schedule['department']['name'] : '',
             $schedule['department'] && $schedule['department']['faculty'] ? $schedule['department']['faculty']['name'] : '',
-            $schedule['subject_id'] ? $schedule['subject']['name'] : '',
-            $schedule['group_id'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
-            $schedule['teacher_id'] ? $schedule['teacher']['full_name'] : '',
+            $schedule['subject_id'] && $schedule['subject'] ? $schedule['subject']['name'] : '',
+            $schedule['group_id'] && $schedule['group'] ? $schedule['group']['name'] . ' ' . $schedule['group']['letter'] : '',
+            $schedule['teacher_id'] && $schedule['teacher'] ? $schedule['teacher']['full_name'] : '',
         ];
     }
 

@@ -10,6 +10,8 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Subject;
 use App\Http\Requests\SubjectFormRequest;
+use App\Services\SearchService;
+use App\Http\Requests\SearchRequest;
 
 class SubjectController extends Controller
 {
@@ -17,6 +19,7 @@ class SubjectController extends Controller
 
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
+        $this->searchService = new SearchService(new Subject());
 
         switch ($this->accountService->getType()) {
             case Account::TYPES['UNIVERSITY'] :
@@ -293,5 +296,42 @@ class SubjectController extends Controller
         }
 
         return $this->sendError(__('Server error'));
+    }
+
+     /**
+     * @OA\Get(
+     * path="/api/v1/admin/subject/search?search={search}",
+     *   tags={"Subjects"},
+     *   summary="Поиск по предметам",
+     *   operationId="search_subjects",
+     * 
+     *   @OA\Parameter(
+     *      name="search",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   )
+     *)
+     * @param Request $request
+     * @return bool
+     */
+    public function search(SearchRequest $request)
+    {
+        $input = $request->validated();
+        $input['account_id'] = $this->accountService->getId();
+        
+        $subjects = $this->searchService->search($input);
+
+        return $this->sendResponse($subjects);
     }
 }

@@ -39,8 +39,10 @@ Route::prefix('v1')->group(function()
         Route::resource('faculties', FacultyController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('teachers', TeacherController::class);
+        Route::get('teacher/search', [TeacherController::class, 'search']);
         Route::resource('schedules', ScheduleController::class);
         Route::resource('subjects', SubjectController::class);
+        Route::get('subject/search', [SubjectController::class, 'search']);
         Route::resource('groups', GroupController::class);
         Route::resource('buildings', BuildingController::class);
         Route::get('schedules_export',[ScheduleController::class, 'export']);

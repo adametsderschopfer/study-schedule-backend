@@ -10,6 +10,8 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Teacher;
 use App\Http\Requests\TeacherFormRequest;
+use App\Services\SearchService;
+use App\Http\Requests\SearchRequest;
 
 class TeacherController extends Controller
 {
@@ -17,6 +19,7 @@ class TeacherController extends Controller
 
     public function __construct(AccountService $accountService) {
         $this->accountService = $accountService;
+        $this->searchService = new SearchService(new Teacher());
 
         switch ($this->accountService->getType()) {
             case Account::TYPES['UNIVERSITY'] :
@@ -316,5 +319,42 @@ class TeacherController extends Controller
         }
 
         return $this->sendError(__('Server error'));
+    }
+
+     /**
+     * @OA\Get(
+     * path="/api/v1/admin/teacher/search?search={search}",
+     *   tags={"Teachers"},
+     *   summary="Поиск по преподавателям",
+     *   operationId="search_teachers",
+     * 
+     *   @OA\Parameter(
+     *      name="search",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   )
+     *)
+     * @param Request $request
+     * @return bool
+     */
+    public function search(SearchRequest $request)
+    {
+        $input = $request->validated();
+        $input['account_id'] = $this->accountService->getId();
+
+        $teachers = $this->searchService->search($input);
+
+        return $this->sendResponse($teachers);
     }
 }

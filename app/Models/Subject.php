@@ -11,6 +11,8 @@ class Subject extends Model
     use HasFactory;
     use SoftDeletes;
 
+    private const SEACH_FIELD = 'name';
+
     protected $fillable = [
         'account_id', 
         'name'
@@ -61,5 +63,10 @@ class Subject extends Model
             return true;
         }
         return false;
+    }
+
+    public function getSeachField(): string 
+    {
+        return self::SEACH_FIELD;
     }
 }

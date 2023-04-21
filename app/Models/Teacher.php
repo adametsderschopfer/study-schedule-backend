@@ -14,6 +14,8 @@ class Teacher extends Model
     use HasFactory;
     use SoftDeletes;
 
+    private const SEACH_FIELD = 'full_name';
+
     protected $fillable = [
         'account_id',
         'full_name',
@@ -80,5 +82,10 @@ class Teacher extends Model
             return true;
         }
         return false;
+    }
+
+    public function getSeachField(): string 
+    {
+        return self::SEACH_FIELD;
     }
 }

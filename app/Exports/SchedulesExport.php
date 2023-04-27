@@ -18,8 +18,30 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 {
     protected $schedules;
 
+    private const DAYS = [
+        'ru' => [
+            'Понедельник', 
+            'Вторник', 
+            'Среда', 
+            'Четверг', 
+            'Пятница', 
+            'Суббота',
+            'Воскресенье'
+        ],
+        'en' => [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+        ]
+    ];
+
     private const UNIVERSITY_HEADINGS = [
         'Дата',
+        'День недели',
         'Время',
         'Расписание',
         'Корпус', 
@@ -33,6 +55,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     private const COLLEGE_HEADINGS = [
         'Дата',
+        'День недели',
         'Время',
         'Расписание',
         'Аудитория',
@@ -44,6 +67,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
     private const SCHOOL_HEADINGS = [
         'Дата',
+        'День недели',
         'Время',
         'Расписание',
         'Кабинет',
@@ -98,6 +122,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
     
                     if ($startRow !== $endRow) {
                         $event->sheet->getDelegate()->mergeCells("A{$startRow}:A{$endRow}");
+                        $event->sheet->getDelegate()->mergeCells("B{$startRow}:B{$endRow}");
                     }
                 }
             },
@@ -137,6 +162,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         if ($this->accountService->getType() == Account::TYPES['COLLEGE']) {
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
+                self::DAYS['ru'][$schedule['day_of_week']],
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
@@ -150,6 +176,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         if ($this->accountService->getType() == Account::TYPES['SCHOOL']) {
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
+                self::DAYS['ru'][$schedule['day_of_week']],
                 $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
@@ -161,6 +188,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
 
         return [
             $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
+            self::DAYS['ru'][$schedule['day_of_week']],
             $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
             $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
             $schedule['building_id'] && $schedule['building'] ? $schedule['building']['name'] : '',

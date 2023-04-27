@@ -55,7 +55,8 @@ class ExternalAuthRequest
             'external_id' =>  $accountInfo['id'],
             'email' => $accountInfo['email'],
             'name' => $accountInfo['firstName'],
-            'role' => $accountInfo['role']
+            'role' => $accountInfo['role'],
+            'type' => isset($accountInfo['studyScheduleType']) ? $accountInfo['studyScheduleType'] : 0
         ];
 
         $externalAccount = new ExternalAccount();

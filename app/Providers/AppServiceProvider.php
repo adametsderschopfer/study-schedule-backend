@@ -8,6 +8,7 @@ use App\Models\ScheduleSetting;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Building;
+use App\Models\BuildingClassroom;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -77,7 +78,20 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Building::deleted(function ($building) {
+            foreach ($building->building_classrooms as $building_classroom) {
+                foreach ($building_classroom->schedules as $schedule) {
+                    $schedule->building_classroom_id = null;
+                    $schedule->save();
+                }
+            }
             $building->building_classrooms()->delete();
+        });
+
+        BuildingClassroom::deleting(function ($buildingClassroom) {
+            foreach ($buildingClassroom->schedules as $schedule) {
+                $schedule->building_classroom_id = null;
+                $schedule->save();
+            }
         });
     }
 }

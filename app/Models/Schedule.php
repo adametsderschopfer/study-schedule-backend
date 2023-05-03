@@ -127,7 +127,6 @@ class Schedule extends Model
             }
         }
 
-        $department = Department::findOrFail($input['department_id']);
         $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
         $subject = Subject::findOrFail($input['subject_id']);
         $group = Group::findOrFail($input['group_id']);

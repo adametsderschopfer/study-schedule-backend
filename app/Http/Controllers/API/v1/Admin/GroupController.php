@@ -391,7 +391,7 @@ class GroupController extends Controller
 
         if (isset($input['teacher_id'])) {
             $teacher = Teacher::findOrFail($input['teacher_id']);
-            if (!$teacher->hasAccount($this->accountService->getId()) || $this->groupable !== false) {
+            if (!$teacher->hasAccount($this->accountService->getId())) {
                 unset($input['teacher_id']);
             }
         }

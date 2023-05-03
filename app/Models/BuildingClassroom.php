@@ -44,9 +44,9 @@ class BuildingClassroom extends Model
         return $this->belongsTo(Building::class);
     }
 
-    public function schedule()
+    public function schedules()
     {
-        return $this->hasOne(Schedule::class);
+        return $this->hasMany(Schedule::class);
     }
 
     public function hasAccount(int $account_id): bool

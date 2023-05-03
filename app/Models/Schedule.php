@@ -119,6 +119,14 @@ class Schedule extends Model
 
     public static function checkRelations(array $input, $account_id): bool
     {
+        $hasDepartment = true;
+        if (isset($input['department_id'])) {
+            $department = Department::findOrFail($input['department_id']);
+            if (!$department->hasAccount($account_id)) {
+                $hasDepartment = false;
+            }
+        }
+
         $department = Department::findOrFail($input['department_id']);
         $scheduleSetting = ScheduleSetting::findOrFail($input['schedule_setting_id']);
         $subject = Subject::findOrFail($input['subject_id']);
@@ -128,7 +136,7 @@ class Schedule extends Model
         $buildingClassroom = BuildingClassroom::findOrFail($input['building_classroom_id']);
 
         return (
-            $department->hasAccount($account_id) &&
+            $hasDepartment &&
             $scheduleSetting->hasAccount($account_id) &&
             $subject->hasAccount($account_id) &&
             $group->hasAccount($account_id) &&

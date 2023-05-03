@@ -214,9 +214,16 @@ class TeacherController extends Controller
     protected function store(TeacherFormRequest $request)
     {
         $input = $request->validated();
-
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
         $input['account_id'] = $this->accountService->getId();
+
+        if (isset($input['parent_id'])) {
+            $parent = $this->teacherable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
+        }
 
         if (!$parent->hasAccount($input['account_id'])) {
             abort(404);
@@ -300,7 +307,14 @@ class TeacherController extends Controller
     {
         $input = $request->validated();
 
-        $parent = $this->teacherable::findOrFail($input['parent_id']);
+        if (isset($input['parent_id'])) {
+            $parent = $this->teacherable::findOrFail($input['parent_id']);
+            if (!$parent->hasAccount($this->accountService->getId())) {
+                abort(404);
+            }
+        } else {
+            $parent = Account::findOrFail($this->accountService->getId());
+        }
 
         if (!$parent->hasAccount($this->accountService->getId())) {
             abort(404);

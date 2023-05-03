@@ -77,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Building::deleted(function ($building) {
-            $building->building_rooms()->delete();
+            $building->building_classrooms()->delete();
         });
     }
 }

@@ -163,7 +163,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 self::DAYS['ru'][$schedule['day_of_week']],
-                $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
+                $schedule['schedule_setting_item'][0] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
                 $schedule['department'] && $schedule['department']['faculty'] ? $schedule['department']['faculty']['name'] : '',
@@ -177,7 +177,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
             return [
                 $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
                 self::DAYS['ru'][$schedule['day_of_week']],
-                $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
+                $schedule['schedule_setting_item'][0] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
                 $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
                 $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',
                 $schedule['subject_id'] && $schedule['subject'] ? $schedule['subject']['name'] : '',
@@ -189,7 +189,7 @@ class SchedulesExport implements FromArray, WithHeadings, ShouldAutoSize, WithEv
         return [
             $schedule['date'] ? date("d.m.Y", strtotime($schedule['date'])) : '',
             self::DAYS['ru'][$schedule['day_of_week']],
-            $schedule['schedule_setting_item'] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
+            $schedule['schedule_setting_item'][0] ? $schedule['schedule_setting_item'][0]['time_start']->format('H:i') . ' - ' . $schedule['schedule_setting_item'][0]['time_end']->format('H:i') : '',
             $schedule['schedule_setting_id'] && $schedule['schedule_setting'] ? $schedule['schedule_setting']['name'] : '',
             $schedule['building_id'] && $schedule['building'] ? $schedule['building']['name'] : '',
             $schedule['building_classroom_id'] && $schedule['building_classroom'] ? $schedule['building_classroom']['name'] : '',

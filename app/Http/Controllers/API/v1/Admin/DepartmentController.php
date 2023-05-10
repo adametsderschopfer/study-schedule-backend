@@ -65,6 +65,7 @@ class DepartmentController extends Controller
             $faculties[] = $faculty->id;
         } else {
             $faculties = Faculty::select('id')->where('account_id', $this->accountService->getId());
+            $faculties = $faculties->pluck('id')->toArray();
         }
         
         $departments = Department::whereIn('faculty_id', $faculties)
